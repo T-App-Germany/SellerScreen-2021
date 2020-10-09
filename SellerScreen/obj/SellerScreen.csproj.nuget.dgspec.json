@@ -1,0 +1,63 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Tom Mohr\\Documents\\T-App Germany\\Apps\\SellerScreen\\SellerScreen\\SellerScreen.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Tom Mohr\\Documents\\T-App Germany\\Apps\\SellerScreen\\SellerScreen\\SellerScreen.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Tom Mohr\\Documents\\T-App Germany\\Apps\\SellerScreen\\SellerScreen\\SellerScreen.csproj",
+        "projectName": "SellerScreen",
+        "projectPath": "C:\\Users\\Tom Mohr\\Documents\\T-App Germany\\Apps\\SellerScreen\\SellerScreen\\SellerScreen.csproj",
+        "packagesPath": "C:\\Users\\Tom Mohr\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Tom Mohr\\Documents\\T-App Germany\\Apps\\SellerScreen\\SellerScreen\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\Tom Mohr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://t-app-germany.pkgs.visualstudio.com/Palaver-ClubSystem/_packaging/Test/nuget/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net48": {
+          "dependencies": {
+            "Microsoft.VCRTForwarders.140": {
+              "target": "Package",
+              "version": "[1.0.6, )"
+            }
+          },
+          "imports": [
+            "uap10.0.19041"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}

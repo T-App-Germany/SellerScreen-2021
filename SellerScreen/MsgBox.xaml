@@ -1,0 +1,19 @@
+﻿<Window x:Class="SellerScreen.MsgBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SellerScreen"
+        mc:Ignorable="d"
+        Title="MsgBox" Height="200" Width="446" WindowStyle="None" BorderBrush="#FF59A82D" BorderThickness="5" WindowStartupLocation="CenterScreen" UseLayoutRounding="True">
+    <Grid>
+        <Image x:Name="Img" HorizontalAlignment="Left" Width="64" Source="Resources/Problem-icon.png" Margin="10,10,0,49"/>
+        <Label x:Name="MessageLbl" Content="Label" HorizontalAlignment="Left" Margin="79,10,0,0" VerticalAlignment="Top" Height="123" Width="339" FontSize="15" VerticalContentAlignment="Center"/>
+        <WrapPanel FlowDirection="RightToLeft" Height="44" VerticalAlignment="Bottom">
+            <Button x:Name="CancelBtn" Content="_Abbrechen" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="10" FontSize="15" IsCancel="True"/>
+            <Button x:Name="OkBtn" Content="_OK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="10" FontSize="15" IsDefault="True" Click="OkBtn_Click"/>
+            <Button x:Name="NoBtn" Content="_Nein" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="10" FontSize="15" IsCancel="True"/>
+            <Button x:Name="YesBtn" Content="_Ja" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="10" FontSize="15" IsDefault="True" Click="YesBtn_Click"/>
+        </WrapPanel>
+    </Grid>
+</Window>

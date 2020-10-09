@@ -1,0 +1,12 @@
+﻿<Window x:Name="Log_Window" x:Class="SellerScreen.LogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SellerScreen"
+        mc:Ignorable="d"
+        Title="LogWindow" Height="800" Topmost="True" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="500" Closing="Logwindow_Closing" WindowStyle="ToolWindow">
+    <ScrollViewer x:Name="ScrollView" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <TextBlock x:Name="txtblock"/>
+    </ScrollViewer>
+</Window>
