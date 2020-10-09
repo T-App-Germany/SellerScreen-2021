@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Tom Mohr\\Documents\\T-App Germany\\Apps\\SellerScreen\\SellerScreen\\SellerScreen.csproj": {}
+    "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen\\SellerScreen.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Tom Mohr\\Documents\\T-App Germany\\Apps\\SellerScreen\\SellerScreen\\SellerScreen.csproj": {
+    "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen\\SellerScreen.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Tom Mohr\\Documents\\T-App Germany\\Apps\\SellerScreen\\SellerScreen\\SellerScreen.csproj",
+        "projectUniqueName": "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen\\SellerScreen.csproj",
         "projectName": "SellerScreen",
-        "projectPath": "C:\\Users\\Tom Mohr\\Documents\\T-App Germany\\Apps\\SellerScreen\\SellerScreen\\SellerScreen.csproj",
+        "projectPath": "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen\\SellerScreen.csproj",
         "packagesPath": "C:\\Users\\Tom Mohr\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Tom Mohr\\Documents\\T-App Germany\\Apps\\SellerScreen\\SellerScreen\\obj\\",
+        "outputPath": "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Nx+l+TllbkW6pzPz/5l0h+n+2hPbo7pVmTzdNZ8NNWCxJVryzFsrIAnlL/bCkrbUJfcQtYqLhVWEpm/C8Je0aA==",
+  "dgSpecHash": "ZEPzAzNVLTFheMh9vwBPiPX02BI5EGpSrwOU/kn1pSb8jKHKcYJ7ePcqXRKZwC9Y/SCNerI8CDJ3ghkPbDmVpQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Tom Mohr\\Documents\\T-App Germany\\Apps\\SellerScreen\\SellerScreen\\SellerScreen.csproj",
+  "projectFilePath": "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen\\SellerScreen.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Tom Mohr\\.nuget\\packages\\microsoft.vcrtforwarders.140\\1.0.6\\microsoft.vcrtforwarders.140.1.0.6.nupkg.sha512"
   ],
