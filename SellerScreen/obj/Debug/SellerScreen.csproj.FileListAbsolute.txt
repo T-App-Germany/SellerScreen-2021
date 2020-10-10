@@ -187,9 +187,6 @@ C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\App.g.cs
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen_Content.g.cs
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen_MarkupCompile.cache
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen_MarkupCompile.lref
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\App.baml
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\LogWindow.baml
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\MsgBox.baml
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.g.resources
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.Properties.Resources.resources
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.csproj.GenerateResource.cache
