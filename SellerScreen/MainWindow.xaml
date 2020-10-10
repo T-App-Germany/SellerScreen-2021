@@ -1109,27 +1109,41 @@
                                 <Button x:Name="StaticsDayBtn" Content="Einzelner Tag" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="120" Height="34" Background="{x:Null}" FontSize="17" BorderBrush="{x:Null}" ToolTip="Statistiken nach Datum anzeigen"/>
                             </StackPanel>
                             <Border x:Name="StaticsActiveMenuBorder" BorderThickness="0" HorizontalAlignment="Left" Height="5" Margin="140,50,0,0" VerticalAlignment="Top" Width="120" Background="#FF0C86FF" RenderTransformOrigin="0.5,0.5"/>
-                            <Grid x:Name="StaticsTotalGrid" Margin="0,70,0,0">
+                            <Grid x:Name="StaticsTotalGrid" Margin="0,70,0,0" Visibility="Collapsed">
                                 <ScrollViewer FontSize="15">
-                                    <StackPanel>
-                                        <WrapPanel>
-                                            <Label Content="Start:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,10"/>
-                                            <Label x:Name="StaticsStartTimeLbl" Content="00.00.0000" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,10,10"/>
-                                            <Label Content="Kunden:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,10"/>
-                                            <Label x:Name="StaticsAllCustomerLbl" Content="000000" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,10,10"/>
-                                            <Label Content="Verkauft:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,10"/>
-                                            <Label x:Name="StaticsAllSoldProductsNumberLbl" Content="000000" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,10,10"/>
-                                            <Label Content="Einnahmen:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,10"/>
-                                            <Label x:Name="StaticsAllGottenCashNumberLbl" Content="000000€" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,10,10"/>
-                                            <Label Content="Verluste:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,10"/>
-                                            <Label x:Name="StaticsAllLostCashNumberLbl" Content="000000€" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,10,10"/>
-                                            <Label Content="Rücknahmen:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,10"/>
-                                            <Label x:Name="StaticsAllLostProductsNumberLbl" Content="000000" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,10,10"/>
-                                        </WrapPanel>
-                                        <GroupBox Header="Computernutzung" Margin="10" FontSize="15" Visibility="Collapsed">
-                                            <Grid>
-                                                <WrapPanel>
-                                                    <WrapPanel Orientation="Vertical">
+                                    <WrapPanel>
+                                        <Border BorderBrush="{Binding Background, ElementName=SeperatorColor}" BorderThickness="2" CornerRadius="3" Margin="10">
+                                            <StackPanel>
+                                                <StackPanel Background="{Binding Background, ElementName=SideBarsColor}" Margin="0,0,0,5">
+                                                    <Label Content="Überblick" FontSize="20" Margin="10"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <StackPanel>
+                                                        <Label Content="Start:" Margin="10,10,0,10"/>
+                                                        <Label Content="Kunden:" Margin="10,10,0,10"/>
+                                                        <Label Content="Verkauft:" Margin="10,10,0,10"/>
+                                                        <Label Content="Einnahmen:" Margin="10,10,0,10"/>
+                                                        <Label Content="Verluste:" Margin="10,10,0,10"/>
+                                                        <Label Content="Rücknahmen:" Margin="10,10,0,10"/>
+                                                    </StackPanel>
+                                                    <StackPanel  Margin="10,0">
+                                                        <Label x:Name="StaticsStartTimeLbl" Content="00.00.0000" Margin="0,10,10,10"/>
+                                                        <Label x:Name="StaticsAllCustomerLbl" Content="0000" Margin="0,10,10,10"/>
+                                                        <Label x:Name="StaticsAllSoldProductsNumberLbl" Content="0000" Margin="0,10,10,10"/>
+                                                        <Label x:Name="StaticsAllGottenCashNumberLbl" Content="0000€" Margin="0,10,10,10"/>
+                                                        <Label x:Name="StaticsAllLostCashNumberLbl" Content="0000€" Margin="0,10,10,10"/>
+                                                        <Label x:Name="StaticsAllLostProductsNumberLbl" Content="0000" Margin="0,10,10,10"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border BorderBrush="{Binding Background, ElementName=SeperatorColor}" BorderThickness="2" CornerRadius="3" Margin="10">
+                                            <StackPanel>
+                                                <StackPanel Background="{Binding Background, ElementName=SideBarsColor}" Margin="0,0,0,5">
+                                                    <Label Content="Computernutzung" FontSize="20" Margin="10"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <StackPanel Orientation="Vertical">
                                                         <WrapPanel Margin="10">
                                                             <Label Content="PC-1 Nutzungszeit:"/>
                                                             <Label x:Name="StaticsTotalPc1TimeLbl" Content="00,00"/>
@@ -1149,9 +1163,9 @@
                                                             <Label Content="PC-2 Benutzer:"/>
                                                             <Label x:Name="StaticsTotalPc2UserLbl" Content="00"/>
                                                         </WrapPanel>
-                                                    </WrapPanel>
+                                                    </StackPanel>
                                                     <WrapPanel Orientation="Vertical">
-                                                        <Wpf:PieChart LegendLocation="Right" Width="170" DisableAnimations="True" Hoverable="False" Height="100" TooltipTimeout="0">
+                                                        <Wpf:PieChart Width="170" DisableAnimations="True" Hoverable="False" Height="100" TooltipTimeout="0">
                                                             <Wpf:PieChart.Series>
                                                                 <Wpf:PieSeries Title="PC-1" Values="50">
                                                                     <Wpf:PieSeries.Fill>
@@ -1166,7 +1180,7 @@
                                                             </Wpf:PieChart.Series>
                                                         </Wpf:PieChart>
                                                         <Separator/>
-                                                        <Wpf:PieChart LegendLocation="Right" Width="170" DisableAnimations="True" Hoverable="False" Height="100" TooltipTimeout="0">
+                                                        <Wpf:PieChart Width="170" DisableAnimations="True" Hoverable="False" Height="100" TooltipTimeout="0">
                                                             <Wpf:PieChart.Series>
                                                                 <Wpf:PieSeries Title="PC-1" Values="50">
                                                                     <Wpf:PieSeries.Fill>
@@ -1181,12 +1195,15 @@
                                                             </Wpf:PieChart.Series>
                                                         </Wpf:PieChart>
                                                     </WrapPanel>
-                                                </WrapPanel>
-                                            </Grid>
-                                        </GroupBox>
-                                        <GroupBox Header="Am meißten Verkauft" Margin="10">
-                                            <Grid>
-                                                <WrapPanel>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border BorderBrush="{Binding Background, ElementName=SeperatorColor}" BorderThickness="2" CornerRadius="3" Margin="10">
+                                            <StackPanel>
+                                                <StackPanel Background="{Binding Background, ElementName=SideBarsColor}">
+                                                    <Label Content="Am meißten Verkauft" FontSize="20" Margin="10"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
                                                     <StackPanel Margin="10">
                                                         <Label Content="Platz" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                                                         <Label Content="1" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,5"/>
@@ -1219,12 +1236,15 @@
                                                         <Label x:Name="StaticsTotalMostSoldProductsNumber3" Content="0000" VerticalContentAlignment="Center" Margin="0,5" HorizontalContentAlignment="Center"/>
                                                         <Label x:Name="StaticsTotalMostSoldProductsNumber4" Content="0000" VerticalContentAlignment="Center" Margin="0,5" HorizontalContentAlignment="Center"/>
                                                     </StackPanel>
-                                                </WrapPanel>
-                                            </Grid>
-                                        </GroupBox>
-                                        <GroupBox Header="Höchste Einnahmen" Margin="10">
-                                            <Grid>
-                                                <WrapPanel>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border BorderBrush="{Binding Background, ElementName=SeperatorColor}" BorderThickness="2" CornerRadius="3" Margin="10">
+                                            <StackPanel>
+                                                <StackPanel Background="{Binding Background, ElementName=SideBarsColor}">
+                                                    <Label Content="Höchste Einnahmen" FontSize="20" Margin="10"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
                                                     <StackPanel Margin="10">
                                                         <Label Content="Platz" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                                                         <Label Content="1" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,5"/>
@@ -1257,25 +1277,28 @@
                                                         <Label x:Name="StaticsTotalHighestEarningsProductsNumber3" Content="000€" VerticalContentAlignment="Center" Margin="0,5" HorizontalContentAlignment="Center"/>
                                                         <Label x:Name="StaticsTotalHighestEarningsProductsNumber4" Content="000€" VerticalContentAlignment="Center" Margin="0,5" HorizontalContentAlignment="Center"/>
                                                     </StackPanel>
-                                                </WrapPanel>
-                                            </Grid>
-                                        </GroupBox>
-                                        <GroupBox Header="Verkaufte Produkte" Margin="10">
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border BorderBrush="{Binding Background, ElementName=SeperatorColor}" BorderThickness="2" CornerRadius="3" Margin="10">
                                             <StackPanel>
-                                                <WrapPanel Margin="10" Orientation="Vertical">
-                                                    <WrapPanel>
+                                                <StackPanel Background="{Binding Background, ElementName=SideBarsColor}">
+                                                    <Label Content="Verkaufte Produkte" FontSize="20" Margin="10"/>
+                                                </StackPanel>
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="10">
                                                         <Label Content="Anzahl: "/>
                                                         <Label x:Name="StaticsAllProductTypesNumberLbl" Content="0000"/>
-                                                    </WrapPanel>
+                                                    </StackPanel>
                                                     <ListView x:Name="StaticsAllProductTypesListView" Margin="10" SelectionMode="Single" Background="{x:Null}"/>
-                                                </WrapPanel>
+                                                </StackPanel>
                                             </StackPanel>
-                                        </GroupBox>
-                                    </StackPanel>
+                                        </Border>
+                                    </WrapPanel>
                                 </ScrollViewer>
                             </Grid>
-                            <Grid x:Name="StaticsDayGrid" Margin="0,70,0,0" Visibility="Collapsed">
-                                <StackPanel HorizontalAlignment="Left" Width="220">
+                            <Grid x:Name="StaticsDayGrid" Margin="0,70,0,0" >
+                                <StackPanel HorizontalAlignment="Left" Width="160">
                                     <StackPanel Orientation="Horizontal">
                                         <StackPanel Margin="10">
                                             <Label Content="Jahr:" FontSize="15" Padding="2"/>
@@ -1292,9 +1315,9 @@
                                         <Label Content="00.00.0000"/>
                                     </ListBox>
                                 </GroupBox>
-                                <ScrollViewer Margin="160,0,0,0">
+                                <ScrollViewer Margin="160,0,0,0" FontSize="15">
                                     <StackPanel>
-                                        <GroupBox Header="Computerzeit" Margin="5,0,5,10" FontSize="15" Visibility="Collapsed">
+                                        <GroupBox Header="Computerzeit" Margin="5,0,5,10" FontSize="15">
                                             <Grid>
                                                 <WrapPanel>
                                                     <WrapPanel Orientation="Vertical">
@@ -1364,10 +1387,13 @@
                                                 </WrapPanel>
                                             </Grid>
                                         </GroupBox>
-                                        <GroupBox Header="Verkauf" Margin="5,10,5,0" FontSize="15">
-                                            <Grid>
+                                        <Border BorderBrush="{Binding Background, ElementName=SeperatorColor}" BorderThickness="2" CornerRadius="3" Margin="10">
+                                            <StackPanel>
+                                                <StackPanel Background="{Binding Background, ElementName=SideBarsColor}">
+                                                    <Label Content="Verkauf" FontSize="20" Margin="10"/>
+                                                </StackPanel>
                                                 <StackPanel>
-                                                    <WrapPanel Margin="10">
+                                                    <StackPanel Orientation="Horizontal" Margin="10">
                                                         <Label Content="Einnahmen: " Padding="5,5,0,5"/>
                                                         <Label x:Name="StaticsDayGottenCashNumberLbl" Content="000€" Padding="0,5,5,5" Margin="0,0,10,0"/>
                                                         <Label Content="Verkauft: " Padding="5,5,0,5"/>
@@ -1376,90 +1402,90 @@
                                                         <Label x:Name="StaticsDayLostCashNumberLbl" Content="000€" Padding="0,5,5,5" Margin="0,0,10,0"/>
                                                         <Label Content="Rücknahmen: " Padding="5,5,0,5" Margin="10,0,0,0"/>
                                                         <Label x:Name="StaticsDayLostProductsNumberLbl" Content="0000" Padding="0,5,5,5"/>
-                                                    </WrapPanel>
-                                                    <Separator/>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <StackPanel Margin="10,10,0,10" Orientation="Vertical">
-                                                            <Label Content="" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                                                            <StackPanel x:Name="StaticsDaySlotPanel" Orientation="Vertical">
-                                                                <Label x:Name="StaticsDaySlot0SlotLbl" Content="0"  Margin="5,5,0,5" FontWeight="Bold" />
-                                                            </StackPanel>
-                                                        </StackPanel>
-                                                        <StackPanel Margin="10" Orientation="Vertical">
-                                                            <Label Content="Name" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                                                            <StackPanel x:Name="StaticsDaySlotNamePanel" Orientation="Vertical">
-                                                                <Label x:Name="StaticsDaySlot0NameLbl" Content="Name0"  Margin="5" />
-                                                            </StackPanel>
-                                                        </StackPanel>
-                                                        <StackPanel Margin="10" Orientation="Vertical">
-                                                            <Label Content="Einzelpreis" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                                                            <StackPanel x:Name="StaticsDaySinglePricePanel" Orientation="Vertical">
-                                                                <Label x:Name="StaticsDaySlot0SinglePriceLbl" Content="000€" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Center"/>
-                                                            </StackPanel>
-                                                        </StackPanel>
-                                                        <StackPanel Margin="10" Orientation="Vertical">
-                                                            <Label Content="Verkauft" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                                                            <StackPanel x:Name="StaticsDaySoldPanel" Orientation="Vertical">
-                                                                <Label x:Name="StaticsDaySlot0NumberLbl" Content="0000" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Center"/>
-                                                            </StackPanel>
-                                                        </StackPanel>
-                                                        <StackPanel  Margin="10" Orientation="Vertical">
-                                                            <Label Content="Einnahmen" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                                                            <StackPanel x:Name="StaticsDayCashPanel" Orientation="Vertical">
-                                                                <Label x:Name="StaticsDaySlot0CashLbl" Content="000€" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Center"/>
-                                                            </StackPanel>
-                                                        </StackPanel>
                                                     </StackPanel>
-                                                    <Separator/>
                                                     <WrapPanel>
-                                                        <StackPanel Margin="10">
-                                                            <Label Content="Verkaufte Produkte (Anzahl)" FontWeight="Bold" FontSize="20"/>
-                                                            <Wpf:PieChart x:Name="StaticsDayChartOfCash" HorizontalAlignment="Left" Height="400" InnerRadius="50" Width="400" Margin="0,10,0,0" StartingRotationAngle="0" HoverPushOut="10" TooltipTimeout="0">
-                                                                <Wpf:PieChart.Series>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 1"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 2"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 3"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 4"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 5"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 6"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 7"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 8"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 9"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 10"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 11"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 12"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 13"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 14"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 15"/>
-                                                                </Wpf:PieChart.Series>
-                                                            </Wpf:PieChart>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <StackPanel Margin="10,10,0,10" Orientation="Vertical">
+                                                                <Label Content="" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                                                <StackPanel x:Name="StaticsDaySlotPanel" Orientation="Vertical">
+                                                                    <Label x:Name="StaticsDaySlot0SlotLbl" Content="0"  Margin="5,5,0,5" FontWeight="Bold" />
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                            <StackPanel Margin="10" Orientation="Vertical">
+                                                                <Label Content="Name" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                                                <StackPanel x:Name="StaticsDaySlotNamePanel" Orientation="Vertical">
+                                                                    <Label x:Name="StaticsDaySlot0NameLbl" Content="Name0"  Margin="5" />
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                            <StackPanel Margin="10" Orientation="Vertical">
+                                                                <Label Content="Einzelpreis" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                                                <StackPanel x:Name="StaticsDaySinglePricePanel" Orientation="Vertical">
+                                                                    <Label x:Name="StaticsDaySlot0SinglePriceLbl" Content="000€" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Center"/>
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                            <StackPanel Margin="10" Orientation="Vertical">
+                                                                <Label Content="Verkauft" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                                                <StackPanel x:Name="StaticsDaySoldPanel" Orientation="Vertical">
+                                                                    <Label x:Name="StaticsDaySlot0NumberLbl" Content="0000" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Center"/>
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                            <StackPanel  Margin="10" Orientation="Vertical">
+                                                                <Label Content="Einnahmen" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                                                <StackPanel x:Name="StaticsDayCashPanel" Orientation="Vertical">
+                                                                    <Label x:Name="StaticsDaySlot0CashLbl" Content="000€" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Center"/>
+                                                                </StackPanel>
+                                                            </StackPanel>
                                                         </StackPanel>
-                                                        <StackPanel Margin="10">
-                                                            <Label Content="Einnahmen in € (EUR)" FontWeight="Bold" FontSize="20"/>
-                                                            <Wpf:PieChart x:Name="StaticsDayChartOfNumbers" HorizontalAlignment="Left" Height="400" InnerRadius="50" ZoomingSpeed="10" Width="400" Margin="0,10,0,0" StartingRotationAngle="0" HoverPushOut="10" TooltipTimeout="0">
-                                                                <Wpf:PieChart.Series>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 1"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 2"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 3"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 4"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 5"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 6"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 7"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 8"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 9"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 10"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 11"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 12"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 13"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 14"/>
-                                                                    <Wpf:PieSeries Values="10" Title="Slot 15"/>
-                                                                </Wpf:PieChart.Series>
-                                                            </Wpf:PieChart>
-                                                        </StackPanel>
+                                                        <WrapPanel>
+                                                            <StackPanel Margin="10">
+                                                                <Label Content="Verkaufte Produkte (Anzahl)" FontSize="18"/>
+                                                                <Wpf:PieChart x:Name="StaticsDayChartOfCash" HorizontalAlignment="Left" Height="400" InnerRadius="50" Width="400" Margin="0,10,0,0" StartingRotationAngle="0" HoverPushOut="10" TooltipTimeout="0">
+                                                                    <Wpf:PieChart.Series>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 1"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 2"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 3"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 4"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 5"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 6"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 7"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 8"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 9"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 10"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 11"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 12"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 13"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 14"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 15"/>
+                                                                    </Wpf:PieChart.Series>
+                                                                </Wpf:PieChart>
+                                                            </StackPanel>
+                                                            <StackPanel Margin="10">
+                                                                <Label Content="Einnahmen in € (EUR)" FontSize="18"/>
+                                                                <Wpf:PieChart x:Name="StaticsDayChartOfNumbers" HorizontalAlignment="Left" Height="400" InnerRadius="50" ZoomingSpeed="10" Width="400" Margin="0,10,0,0" StartingRotationAngle="0" HoverPushOut="10" TooltipTimeout="0">
+                                                                    <Wpf:PieChart.Series>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 1"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 2"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 3"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 4"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 5"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 6"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 7"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 8"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 9"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 10"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 11"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 12"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 13"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 14"/>
+                                                                        <Wpf:PieSeries Values="10" Title="Slot 15"/>
+                                                                    </Wpf:PieChart.Series>
+                                                                </Wpf:PieChart>
+                                                            </StackPanel>
+                                                        </WrapPanel>
                                                     </WrapPanel>
                                                 </StackPanel>
-                                            </Grid>
-                                        </GroupBox>
+                                            </StackPanel>
+                                        </Border>
                                     </StackPanel>
                                 </ScrollViewer>
                             </Grid>
