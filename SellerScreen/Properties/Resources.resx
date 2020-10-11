@@ -154,6 +154,9 @@
   <data name="Files_2_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Files-2-icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="github_PNG40" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\github_PNG40.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\IMG_3766.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

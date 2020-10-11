@@ -199,3 +199,5 @@ C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.csproj.CopyComplete
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.exe
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.pdb
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.csprojAssemblyReference.cache
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\Resources\github_PNG40.png

@@ -91,14 +91,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SellerScreen.exe" size="1149440">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SellerScreen.exe" size="1200128">
       <assemblyIdentity name="SellerScreen" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>MKykdgjufV2mZj9LIw38hRDLHuj5TLik/B0yaW2l73I=</dsig:DigestValue>
+        <dsig:DigestValue>zaS8I9FeOK4D4wC94msD7ckLpMsO2dxTgdOfN68kpC4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -472,6 +472,15 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>nISXuPmJKk3xBhaEZj5eV3h6ihWkZkjEzBmOU6GrlyA=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Resources\github_PNG40.png" size="23802">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>vUaMvDQQDQDErETipxh8UP3X3Nrw9OT5hWQHO0uu7FE=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Resources\Home-icon.png" size="6428">
