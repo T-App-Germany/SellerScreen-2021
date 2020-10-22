@@ -129,12 +129,5 @@
             <Setter Property="Foreground" Value="{Binding Background, ElementName=TextFontColor}"/>
             <Setter Property="BorderBrush" Value="{Binding Background, ElementName=SeperatorColor}"/>
         </Style>
-        <Style TargetType="{x:Type xctk:ColorPicker}">
-            <Setter Property="Foreground" Value="{Binding Background, ElementName=TextFontColor}"/>
-            <Setter Property="TabForeground" Value="{Binding Background, ElementName=TextFontColor}"/>
-            <Setter Property="HeaderForeground" Value="{Binding Background, ElementName=TextFontColor}"/>
-            <Setter Property="TabBackground" Value="{Binding Background, ElementName=PageBackgroundColor}"/>
-            <Setter Property="HeaderBackground" Value="{Binding Background, ElementName=PageBackgroundColor}"/>
-        </Style>
     </Application.Resources>
 </Application>

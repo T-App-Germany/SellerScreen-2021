@@ -1,0 +1,17 @@
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\bin\Debug\SellerScreen Installer.exe.config
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\bin\Debug\SellerScreen Installer.exe
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\bin\Debug\SellerScreen Installer.pdb
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\obj\Debug\MainWindow.g.cs
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\obj\Debug\App.g.cs
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\obj\Debug\SellerScreen Installer_MarkupCompile.cache
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\obj\Debug\SellerScreen Installer_MarkupCompile.lref
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\obj\Debug\MainWindow.baml
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\obj\Debug\SellerScreen Installer.g.resources
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\obj\Debug\SellerScreen_Installer.Properties.Resources.resources
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\obj\Debug\SellerScreen Installer.csproj.GenerateResource.cache
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\obj\Debug\SellerScreen Installer.csproj.CoreCompileInputs.cache
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\obj\Debug\SellerScreen Installer.exe
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Installer\obj\Debug\SellerScreen Installer.pdb
+C:\Users\Tom Mohr\source\repos\SellerScreen\SellerScreen Installer\obj\Debug\SellerScreen Installer.csprojAssemblyReference.cache
+C:\Users\Tom Mohr\source\repos\SellerScreen\SellerScreen Installer\bin\Debug\SellerScreen Installer.exe.CodeAnalysisLog.xml
+C:\Users\Tom Mohr\source\repos\SellerScreen\SellerScreen Installer\bin\Debug\SellerScreen Installer.exe.lastcodeanalysissucceeded

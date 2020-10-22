@@ -1,0 +1,18 @@
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\bin\Debug\SellerScreen Logger.exe.config
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\bin\Debug\SellerScreen Logger.exe
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\bin\Debug\SellerScreen Logger.pdb
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\bin\Debug\SellerScreen Logger.exe.CodeAnalysisLog.xml
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\bin\Debug\SellerScreen Logger.exe.lastcodeanalysissucceeded
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\Log.baml
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\Log.g.cs
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\App.g.cs
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger_MarkupCompile.cache
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger_MarkupCompile.lref
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\App.baml
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger.g.resources
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen_Logger.Properties.Resources.resources
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger.csproj.GenerateResource.cache
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger.csproj.CoreCompileInputs.cache
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger.exe
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger.pdb
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger.csprojAssemblyReference.cache

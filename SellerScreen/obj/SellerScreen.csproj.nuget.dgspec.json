@@ -4,6 +4,16 @@
     "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen\\SellerScreen.csproj": {}
   },
   "projects": {
+    "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen Logger\\SellerScreen Logger.csproj": {
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen Logger\\SellerScreen Logger.csproj",
+        "projectName": "SellerScreen Logger",
+        "projectPath": "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen Logger\\SellerScreen Logger.csproj"
+      },
+      "frameworks": {
+        "net48": {}
+      }
+    },
     "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen\\SellerScreen.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -27,7 +37,11 @@
         },
         "frameworks": {
           "net48": {
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen Logger\\SellerScreen Logger.csproj": {
+                "projectPath": "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen Logger\\SellerScreen Logger.csproj"
+              }
+            }
           }
         }
       },

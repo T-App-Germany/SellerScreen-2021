@@ -8,13 +8,13 @@ C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\
 SellerScreen
 none
 false
-DEBUG;TRACE
+CODE_ANALYSIS;DEBUG;TRACE
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\App.xaml
-4-222990326
+3942267499
 40-309234661
-15260291193
-135-1251640452
-EditStorageSlot.xaml;LogWindow.xaml;MainWindow.xaml;MsgBox.xaml;
+14-1227465413
+136-374837690
+EditStorageSlot.xaml;MainWindow.xaml;MsgBox.xaml;
 splashscreen.png
-True
+False
 

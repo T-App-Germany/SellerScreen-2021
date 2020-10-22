@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml;
 using Xceed.Wpf.Toolkit;
+using SellerScreen_Logger;
 using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;
 
@@ -98,6 +99,18 @@ namespace SellerScreen
             Warning,
             Success,
         }
+        private enum Pages
+        {
+            Home,
+            Settings,
+            Help,
+            Shop,
+            TimeManager,
+            Statics,
+            UserManager,
+            Storage,
+            FileManager
+        }
 
         private DispatcherTimer MessageTimer { get; set; } = new DispatcherTimer();
         private DispatcherTimer StaticsDaySelectionTimer { get; set; } = new DispatcherTimer();
@@ -106,21 +119,21 @@ namespace SellerScreen
         private BackgroundWorker StorageSaver { get; set; } = new BackgroundWorker();
         public object RegistryKeyPath { get; private set; }
 
-        private readonly LogWindow logWindow = new LogWindow();
+        private readonly LogWindow log = new LogWindow();
         private readonly PathName pathN = new PathName();
         private readonly ThemeData themeData = new ThemeData();
 
         private bool loadTotalStaticsError = false;
         private bool loadDayStaticsError = false;
         private DateTime lastPayDate = DateTime.Today.AddDays(-5);
-        private bool[] displayLogTypes = new bool[5];
+        private bool[] displayLogTypes = new bool[4];
         private bool AppInstallationMode = false;
         private string AppThemeStr = "System";
         private AppTheme Theme;
         private bool AppThemeChanged = false;
         private readonly Random rnd = new Random();
         private short SideObjectsCount = -1;
-        private short WindowPage = 0;
+        private Pages WindowPage = Pages.Home;
         private int MsgNumber = -1;
         private short MsgItemTarget = -1;
 
@@ -170,7 +183,6 @@ namespace SellerScreen
         private short[] productsNumberList = Array.Empty<short>();
         private double[] productsCashList = Array.Empty<double>();
         private double[] productsSinglePriceList = Array.Empty<double>();
-        private Viewbox statusVbox;
 
         //private string[] planedUserNameList = Array.Empty<string>();
         //private int[] plannedUserStartTimeList = Array.Empty<int>();
@@ -206,13 +218,12 @@ namespace SellerScreen
             Directory.CreateDirectory(Path.GetDirectoryName(pathN.productsFile));
             Directory.CreateDirectory(Path.GetDirectoryName(pathN.staticsTotalFile));
             Directory.CreateDirectory(Path.GetDirectoryName(pathN.staticsDayFile));
-            Directory.CreateDirectory(Path.GetDirectoryName(pathN.logFile));
             Directory.CreateDirectory(Path.GetDirectoryName(pathN.graphicsFile));
 
-            displayLogTypes[0] = true;
-            displayLogTypes[2] = true;
-            displayLogTypes[4] = true;
-            logWindow.displayLogTypes = displayLogTypes;
+            //displayLogTypes[0] = true;
+            //displayLogTypes[2] = true;
+            //displayLogTypes[4] = true;
+            //log.displayLogTypes = displayLogTypes;
             MsgPanel.Children.Clear();
 
             if (!File.Exists($"{pathN.settingsFile}Settings.xml") && !File.Exists($"{pathN.settingsFile}Storage.xml") && !File.Exists($"{pathN.settingsFile}TotalStatics.xml"))
@@ -226,7 +237,7 @@ namespace SellerScreen
                 Reload();
             }
 
-            PageChange(8);
+            PageChange(Pages.Home);
             SetAppTheme();
             CloseShop();
             RefreshMaximizeRestoreButton();
@@ -239,15 +250,15 @@ namespace SellerScreen
             StaticsDayYearUpDown.Value = DateTime.Now.Year;
             StaticsDayYearUpDown.Maximum = DateTime.Now.Year;
             StaticsDayMonthUpDown.Value = DateTime.Now.Month;
-            logWindow.NewLog($"Main_Window loaded", 0);
+            log.NewLog($"Anwendung geladen", null, null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Info);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             if (MessageBox.Show($"Möchten Sie {Title} wirklich schließen?", "Anwendung schließen", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                logWindow.NewLog($"Main_Window closed", 0);
-                logWindow.NewLog($"Application is shutting down", 0);
+                log.NewLog($"MainWindow geschlossen", null, null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Info);
+                log.NewLog($"Anwendung wird heruntergefahren", null, null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Info);
                 Application.Current.Shutdown();
             }
             else
@@ -318,7 +329,7 @@ namespace SellerScreen
             }
             catch (Exception ex)
             {
-                logWindow.NewLog($"Application is not able to read WindowsTheme! {ex.Message}", 2);
+                log.NewLog($"Das WindowsAppThema kann nicht gelesen werden!", "WindowsAppThema", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
             }
         }
         #endregion
@@ -417,7 +428,7 @@ namespace SellerScreen
             TopBar.IsEnabled = false;
         }
 
-        private void PageChange(short newPage)
+        private void PageChange(Pages newPage)
         {
             bool error = false;
             WindowPage = newPage;
@@ -439,7 +450,7 @@ namespace SellerScreen
 
             switch (newPage)
             {
-                case 1:
+                case Pages.Home:
                     Page1Grid.BeginAnimation(OpacityProperty, aniIN);
                     Page2Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page3Grid.BeginAnimation(OpacityProperty, aniOUT);
@@ -452,7 +463,7 @@ namespace SellerScreen
 
                     Page1Grid.Visibility = Visibility.Visible;
                     break;
-                case 2:
+                case Pages.Settings:
                     Page1Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page2Grid.BeginAnimation(OpacityProperty, aniIN);
                     Page3Grid.BeginAnimation(OpacityProperty, aniOUT);
@@ -465,7 +476,7 @@ namespace SellerScreen
 
                     Page2Grid.Visibility = Visibility.Visible;
                     break;
-                case 3:
+                case Pages.Help:
                     Page1Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page2Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page3Grid.BeginAnimation(OpacityProperty, aniIN);
@@ -478,7 +489,7 @@ namespace SellerScreen
 
                     Page3Grid.Visibility = Visibility.Visible;
                     break;
-                case 4:
+                case Pages.Shop:
                     Page1Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page2Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page3Grid.BeginAnimation(OpacityProperty, aniOUT);
@@ -491,7 +502,7 @@ namespace SellerScreen
 
                     Page4Grid.Visibility = Visibility.Visible;
                     break;
-                case 5:
+                case Pages.TimeManager:
                     Page1Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page2Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page3Grid.BeginAnimation(OpacityProperty, aniOUT);
@@ -504,7 +515,7 @@ namespace SellerScreen
 
                     Page5Grid.Visibility = Visibility.Visible;
                     break;
-                case 6:
+                case Pages.Statics:
                     Page1Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page2Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page3Grid.BeginAnimation(OpacityProperty, aniOUT);
@@ -517,7 +528,7 @@ namespace SellerScreen
 
                     Page6Grid.Visibility = Visibility.Visible;
                     break;
-                case 7:
+                case Pages.UserManager:
                     Page1Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page2Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page3Grid.BeginAnimation(OpacityProperty, aniOUT);
@@ -530,7 +541,7 @@ namespace SellerScreen
 
                     Page7Grid.Visibility = Visibility.Visible;
                     break;
-                case 8:
+                case Pages.Storage:
                     Page1Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page2Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page3Grid.BeginAnimation(OpacityProperty, aniOUT);
@@ -543,7 +554,7 @@ namespace SellerScreen
 
                     Page8Grid.Visibility = Visibility.Visible;
                     break;
-                case 9:
+                case Pages.FileManager:
                     Page1Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page2Grid.BeginAnimation(OpacityProperty, aniOUT);
                     Page3Grid.BeginAnimation(OpacityProperty, aniOUT);
@@ -556,16 +567,11 @@ namespace SellerScreen
 
                     Page9Grid.Visibility = Visibility.Visible;
                     break;
-                default:
-                    MessageBox.Show($"Die Seite {newPage} konnte nicht gefunden werden", "Menu Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-                    logWindow.NewLog($"Changing Page to PageID {newPage} failed! Internal ERROR", 2);
-                    error = true;
-                    break;
             }
 
             if (error != true)
             {
-                logWindow.NewLog($"Changing Page to PageID {newPage} successful", 1);
+                log.NewLog($"Die Ansicht wurde zu Seite \"{newPage}\" geändert.", null, null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Info);
             }
         }
 
@@ -573,7 +579,7 @@ namespace SellerScreen
         {
             switch (WindowPage)
             {
-                case 1:
+                case Pages.Home:
                     Page2Grid.Visibility = Visibility.Collapsed;
                     Page3Grid.Visibility = Visibility.Collapsed;
                     Page4Grid.Visibility = Visibility.Collapsed;
@@ -583,7 +589,7 @@ namespace SellerScreen
                     Page8Grid.Visibility = Visibility.Collapsed;
                     Page9Grid.Visibility = Visibility.Collapsed;
                     break;
-                case 2:
+                case Pages.Settings:
                     Page1Grid.Visibility = Visibility.Collapsed;
                     Page3Grid.Visibility = Visibility.Collapsed;
                     Page4Grid.Visibility = Visibility.Collapsed;
@@ -593,7 +599,7 @@ namespace SellerScreen
                     Page8Grid.Visibility = Visibility.Collapsed;
                     Page9Grid.Visibility = Visibility.Collapsed;
                     break;
-                case 3:
+                case Pages.Help:
                     Page1Grid.Visibility = Visibility.Collapsed;
                     Page2Grid.Visibility = Visibility.Collapsed;
                     Page4Grid.Visibility = Visibility.Collapsed;
@@ -603,7 +609,7 @@ namespace SellerScreen
                     Page8Grid.Visibility = Visibility.Collapsed;
                     Page9Grid.Visibility = Visibility.Collapsed;
                     break;
-                case 4:
+                case Pages.Shop:
                     Page1Grid.Visibility = Visibility.Collapsed;
                     Page2Grid.Visibility = Visibility.Collapsed;
                     Page3Grid.Visibility = Visibility.Collapsed;
@@ -613,7 +619,7 @@ namespace SellerScreen
                     Page8Grid.Visibility = Visibility.Collapsed;
                     Page9Grid.Visibility = Visibility.Collapsed;
                     break;
-                case 5:
+                case Pages.TimeManager:
                     Page1Grid.Visibility = Visibility.Collapsed;
                     Page2Grid.Visibility = Visibility.Collapsed;
                     Page3Grid.Visibility = Visibility.Collapsed;
@@ -623,7 +629,7 @@ namespace SellerScreen
                     Page8Grid.Visibility = Visibility.Collapsed;
                     Page9Grid.Visibility = Visibility.Collapsed;
                     break;
-                case 6:
+                case Pages.Statics:
                     Page1Grid.Visibility = Visibility.Collapsed;
                     Page2Grid.Visibility = Visibility.Collapsed;
                     Page3Grid.Visibility = Visibility.Collapsed;
@@ -633,7 +639,7 @@ namespace SellerScreen
                     Page8Grid.Visibility = Visibility.Collapsed;
                     Page9Grid.Visibility = Visibility.Collapsed;
                     break;
-                case 7:
+                case Pages.UserManager:
                     Page1Grid.Visibility = Visibility.Collapsed;
                     Page2Grid.Visibility = Visibility.Collapsed;
                     Page3Grid.Visibility = Visibility.Collapsed;
@@ -643,7 +649,7 @@ namespace SellerScreen
                     Page8Grid.Visibility = Visibility.Collapsed;
                     Page9Grid.Visibility = Visibility.Collapsed;
                     break;
-                case 8:
+                case Pages.Storage:
                     Page1Grid.Visibility = Visibility.Collapsed;
                     Page2Grid.Visibility = Visibility.Collapsed;
                     Page3Grid.Visibility = Visibility.Collapsed;
@@ -653,7 +659,7 @@ namespace SellerScreen
                     Page7Grid.Visibility = Visibility.Collapsed;
                     Page9Grid.Visibility = Visibility.Collapsed;
                     break;
-                case 9:
+                case Pages.FileManager:
                     Page1Grid.Visibility = Visibility.Collapsed;
                     Page2Grid.Visibility = Visibility.Collapsed;
                     Page3Grid.Visibility = Visibility.Collapsed;
@@ -779,139 +785,66 @@ namespace SellerScreen
         private void NewMsgItem(MsgTypes type, string headerText, string bodyText, string ex)
         {
             MsgNumber++;
-            Border item = new Border
-            {
-                Width = 300,
-                Height = 120,
-                BorderThickness = new Thickness(2),
-                CornerRadius = new CornerRadius(5),
-                Margin = new Thickness(10),
-                Tag = MsgNumber,
-                Name = $"Msg{MsgNumber}Panel"
-            };
-
-            Grid grid = new Grid();
-
-            Border back = new Border
-            {
-                Opacity = 0.7
-            };
-
-            TextBlock HeaderTxt = new TextBlock
-            {
-                Text = headerText,
-                FontSize = 20,
-                Padding = new Thickness(5),
-                TextTrimming = TextTrimming.CharacterEllipsis,
-                VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(0, 0, 30, 0),
-                Tag = MsgNumber,
-                Name = $"Msg{MsgNumber}HeaderTxt"
-            };
-
-            Button infoBtn = new Button
-            {
-                Width = 25,
-                Height = 25,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(5),
-                Tag = MsgNumber,
-                Name = $"Msg{MsgNumber}InfoBtn"
-            };
-            infoBtn.Click += new RoutedEventHandler(MsgInfoBtn_Click);
-
-            string xamlString = XamlWriter.Save(MsgInfoVboxTemp);
-            StringReader stringReader = new StringReader(xamlString);
-            XmlReader xmlReader = XmlReader.Create(stringReader);
-            Viewbox infoVbox = (Viewbox)XamlReader.Load(xmlReader);
-
-            TextBlock BodyTxt = new TextBlock
-            {
-                Text = bodyText,
-                FontSize = 15,
-                Padding = new Thickness(5),
-                TextTrimming = TextTrimming.CharacterEllipsis,
-                TextWrapping = TextWrapping.WrapWithOverflow,
-                Margin = new Thickness(0, 35, 0, 0),
-                Tag = MsgNumber,
-                Name = $"Msg{MsgNumber}BodyTxt"
-            };
-
-            Grid bar = new Grid
-            {
-                Background = Brushes.White,
-                VerticalAlignment = VerticalAlignment.Bottom,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Height = 2,
-                Margin = new Thickness(2,0,2,0),
-                Tag = MsgNumber,
-                Width = 292
-            };
 
             if (type == MsgTypes.Error)
             {
-                item.BorderBrush = Brushes.Red;
-                back.Background = Brushes.Red;
+                MsgItemTemp.BorderBrush = Brushes.Red;
+                MsgItemBackTemp.Background = Brushes.Red;
             }
             else if (type == MsgTypes.Success)
             {
-                item.BorderBrush = Brushes.Green;
-                back.Background = Brushes.Green;
+                MsgItemTemp.BorderBrush = Brushes.Green;
+                MsgItemBackTemp.Background = Brushes.Green;
             }
             else if (type == MsgTypes.Warning)
             {
-                item.BorderBrush = Brushes.Orange;
-                back.Background = Brushes.Orange;
+                MsgItemTemp.BorderBrush = Brushes.Orange;
+                MsgItemBackTemp.Background = Brushes.Orange;
             }
+
+            MsgItemBodyTemp.Text = bodyText;
+            MsgItemHeaderTemp.Text = headerText;
+
+
+            MsgItemBodyTemp.Foreground = TextFontColor.Background;
+            MsgItemHeaderTemp.Foreground = TextFontColor.Background;
 
             if (!string.IsNullOrEmpty(ex))
             {
-                BodyTxt.Inlines.Add(new Run(ex) { FontStyle = FontStyles.Italic });
+                MsgItemBodyTemp.Inlines.Add(new Run(ex) { FontStyle = FontStyles.Italic });
             }
 
-            infoBtn.Content = infoVbox;
-            item.Child = grid;
-            grid.Children.Add(back);
-            grid.Children.Add(HeaderTxt);
-            grid.Children.Add(infoBtn);
-            grid.Children.Add(BodyTxt);
-            grid.Children.Add(bar);
-            MsgPanel.Children.Add(item);
-
-            RegisterName(HeaderTxt.Name, HeaderTxt);
-            RegisterName(BodyTxt.Name, BodyTxt);
-
+            string xamlString = XamlWriter.Save(MsgItemTemp);
+            StringReader stringReader = new StringReader(xamlString);
+            XmlReader xmlReader = XmlReader.Create(stringReader);
+            Border item = (Border)XamlReader.Load(xmlReader);
+            item.Name = $"MsgItem{MsgNumber}";
+            item.Opacity = 1;
+            item.Visibility = Visibility.Visible;
+            Grid grid = (Grid)item.Child;
+            Grid prog = (Grid)grid.Children[3];
             DoubleAnimation ani = new DoubleAnimation
             {
                 To = 0,
-                Duration = TimeSpan.FromSeconds(5),
+                Duration = TimeSpan.FromSeconds(6),
             };
             ani.Completed += new EventHandler(MsgTimeOut);
-            bar.BeginAnimation(WidthProperty, ani);
-        }
 
-        private void MsgInfoBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                int i = int.Parse(btn.Tag.ToString());
-                MsgBox msg = new MsgBox($"{i}", "", MsgBox.MsgButtons.OkCancel, MsgBox.MsgIcon.Info);
-                msg.ShowDialog();
-            }
+            MsgPanel.Children.Insert(0, item);
+            MsgItemTarget++;
+            prog.BeginAnimation(WidthProperty, ani);
         }
 
         private void MsgTimeOut(object sender, EventArgs e)
         {
-            MsgItemTarget++;
-
             Border item = (Border)MsgPanel.Children[MsgItemTarget];
+            MsgItemTarget--;
 
             DoubleAnimation ani = new DoubleAnimation
             {
                 To = 0,
                 Duration = TimeSpan.FromSeconds(1),
-                EasingFunction = new QuadraticEase(),
+                EasingFunction = new PowerEase(),
             };
             ani.Completed += new EventHandler(MsgHidden);
             item.BeginAnimation(OpacityProperty, ani);
@@ -919,31 +852,7 @@ namespace SellerScreen
 
         private void MsgHidden(object sender, EventArgs e)
         {
-            MsgItemTarget--;
-            try
-            {
-                Border item = (Border)MsgPanel.Children[MsgItemTarget + 1];
-
-                DoubleAnimation ani = new DoubleAnimation
-                {
-                    To = 0,
-                    Duration = TimeSpan.FromSeconds(1),
-                    EasingFunction = new QuadraticEase(),
-                };
-                item.BeginAnimation(HeightProperty, ani);
-
-                ThicknessAnimation ani2 = new ThicknessAnimation
-                {
-                    To = new Thickness(0),
-                    Duration = TimeSpan.FromSeconds(1),
-                    EasingFunction = new QuadraticEase(),
-                };
-                item.BeginAnimation(MarginProperty, ani2);
-            }
-            catch
-            {
-
-            }
+            MsgPanel.Children.RemoveAt(MsgPanel.Children.Count - 1);
         }
         #endregion
 
@@ -955,11 +864,10 @@ namespace SellerScreen
 
         private void OpenLog(object sender, RoutedEventArgs e)
         {
-            logWindow.Show();
-            logWindow.ShowInTaskbar = true;
-            logWindow.ShowActivated = true;
-            logWindow.WindowState = System.Windows.WindowState.Normal;
-            logWindow.ScrollView.ScrollToBottom();
+            log.Show();
+            log.ShowInTaskbar = true;
+            log.ShowActivated = true;
+            log.WindowState = System.Windows.WindowState.Normal;
         }
 
         private void MainMenuPageImg_MouseEnter(object sender, MouseEventArgs e)
@@ -1013,31 +921,31 @@ namespace SellerScreen
                 switch (tag)
                 {
                     case 1:
-                        PageChange(1);
+                        PageChange(Pages.Home);
                         break;
                     case 2:
-                        PageChange(2);
+                        PageChange(Pages.Settings);
                         break;
                     case 3:
-                        PageChange(3);
+                        PageChange(Pages.Help);
                         break;
                     case 4:
-                        PageChange(4);
+                        PageChange(Pages.Shop);
                         break;
                     case 5:
-                        PageChange(5);
+                        PageChange(Pages.TimeManager);
                         break;
                     case 6:
-                        PageChange(6);
+                        PageChange(Pages.Statics);
                         break;
                     case 7:
-                        PageChange(7);
+                        PageChange(Pages.UserManager);
                         break;
                     case 8:
-                        PageChange(8);
+                        PageChange(Pages.Storage);
                         break;
                     case 9:
-                        PageChange(9);
+                        PageChange(Pages.FileManager);
                         break;
                 }
             }
@@ -1487,18 +1395,16 @@ namespace SellerScreen
                         RegisterName(slotScp.Name, slotScp);
                     }
                 }
-                logWindow.NewLog($"Building Shop successful", 1);
+                log.NewLog($"Bauen der Kasse erfolgreich!", "Kasse", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
             }
             catch (Exception ex)
             {
-                logWindow.NewLog($"Building Shop failed! {ex.Message}", 2);
-
+                log.NewLog($"Bauen der Kasse fehlgeschlagen!", "Kasse", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
             }
 
             NewPurchaseBtn.IsEnabled = true;
             ShopNoProductsFoundLbl.Visibility = Visibility.Collapsed;
             ShopProductsGrid.Visibility = Visibility.Visible;
-            logWindow.NewLog($"Building Shop successful", 1);
             NewPurchaseBtn.IsEnabled = true;
 
             if (ShopSlotsPanel.Children.Count == 0)
@@ -1929,8 +1835,7 @@ namespace SellerScreen
                                 }
                                 catch (Exception ex)
                                 {
-                                    logWindow.NewLog($"Error in paying Purchase Slot{n} -> {ex.Message}", 2);
-
+                                    log.NewLog($"Produkt {n + 1} konnte nicht verkauft werden!", "Kasse", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
                                 }
                             }
                         }
@@ -1978,8 +1883,7 @@ namespace SellerScreen
                             }
                             catch (Exception ex)
                             {
-                                logWindow.NewLog($"Error in canceling Purchase Slot{n} -> {ex.Message}", 2);
-
+                                log.NewLog($"Produkt {n + 1} konnte nicht storniert werden!", "Kasse", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
                             }
                         }
                     }
@@ -1996,8 +1900,7 @@ namespace SellerScreen
                             }
                             catch (Exception ex)
                             {
-                                logWindow.NewLog($"Error in complaining Purchase Slot{n} -> {ex.Message}", 2);
-
+                                log.NewLog($"Produkt {n + 1} konnte nicht zurück genommen werden!", "Kasse", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
                             }
                         }
 
@@ -2363,12 +2266,12 @@ namespace SellerScreen
                         Array.Resize(ref StorageSelectedArray, InStorageSlots.Length);
                         StorageUncheckAll();
                     }
-                    logWindow.NewLog($"Building Storage successful", 1);
+                    log.NewLog($"Bauen des Lagers erfolgreich!", "Lager", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
                     NewMsgItem(MsgTypes.Success, "Lager", "Bauen des Lagers erfolgreich!", null);
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Building Storage failed! {ex.Message}", 2);
+                    log.NewLog($"Bauen des Lagers fehlgeschlagen!", "Lager", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
                     NewMsgItem(MsgTypes.Error, "Lager", "Bauen des Lagers fehlgeschlagen!", ex.Message);
                 }
             }
@@ -2792,11 +2695,11 @@ namespace SellerScreen
             try
             {
                 staTS.Save();
-                logWindow.NewLog($"Saving StaticsData/Total successful", 1);
+                log.NewLog($"Speichern der Gesamtstatistiken erfolgreich!", "Gesamtstatistiken", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
             }
             catch (Exception ex)
             {
-                logWindow.NewLog($"Saving StaticsData/Total failed! {ex.Message}", 2);
+                log.NewLog($"Speichern der Gesamtstatistiken fehlgeschlagen!", "Gesamtstatistiken", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
             }
         }
 
@@ -2814,7 +2717,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Total -> Reading startDate failed! {ex.Message}", 2);
+
                 }
                 try
                 {
@@ -2822,7 +2725,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Total -> Reading totalCustomers failed! {ex.Message}", 2);
+
                 }
                 try
                 {
@@ -2830,7 +2733,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Total -> Reading totalSoldProducts failed! {ex.Message}", 2);
+
                 }
                 try
                 {
@@ -2838,7 +2741,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Total -> Reading totalGottenCash failed! {ex.Message}", 2);
+
                 }
                 try
                 {
@@ -2846,7 +2749,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Total -> Reading totalLostProducts failed! {ex.Message}", 2);
+
                 }
                 try
                 {
@@ -2854,7 +2757,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Total -> Reading totalLostProducts failed! {ex.Message}", 2);
+
                 }
                 try
                 {
@@ -2862,7 +2765,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Total -> Reading productsNumberList failed! {ex.Message}", 2);
+
                 }
                 try
                 {
@@ -2870,7 +2773,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Total -> Reading productsNameList failed! {ex.Message}", 2);
+
                 }
                 try
                 {
@@ -2878,7 +2781,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Total -> Reading productsCashList failed! {ex.Message}", 2);
+
                 }
                 try
                 {
@@ -2886,7 +2789,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Total -> Reading productsSinglePriceList failed! {ex.Message}", 2);
+
                 }
 
                 for (int i = 0; i < staTL.StaticsTotalPcUsage.Length; i++)
@@ -2897,7 +2800,7 @@ namespace SellerScreen
                     }
                     catch (Exception ex)
                     {
-                        logWindow.NewLog($"Reading StaticsData/Total/StaticsTotalPcUsers{i} failed! {ex.Message}", 2);
+
                     }
 
                     try
@@ -2906,7 +2809,7 @@ namespace SellerScreen
                     }
                     catch (Exception ex)
                     {
-                        logWindow.NewLog($"Reading StaticsData/Total/StaticsTotalPcUsers{i} failed! {ex.Message}", 2);
+
                     }
                 }
 
@@ -2918,7 +2821,7 @@ namespace SellerScreen
                     }
                     catch (Exception ex)
                     {
-                        logWindow.NewLog($"Reading StaticsData/Total/mostSoldProductsName{i} failed! {ex.Message}", 2);
+
                     }
 
                     try
@@ -2927,7 +2830,7 @@ namespace SellerScreen
                     }
                     catch (Exception ex)
                     {
-                        logWindow.NewLog($"Reading StaticsData/Total/mostSoldProductsNumber{i} failed! {ex.Message}", 2);
+
                     }
 
                     try
@@ -2936,7 +2839,7 @@ namespace SellerScreen
                     }
                     catch (Exception ex)
                     {
-                        logWindow.NewLog($"Reading StaticsData/Total/mostSoldProductsSinglePrice{i} failed! {ex.Message}", 2);
+
                     }
 
                     try
@@ -2945,7 +2848,7 @@ namespace SellerScreen
                     }
                     catch (Exception ex)
                     {
-                        logWindow.NewLog($"Reading StaticsData/Total/highestEarningsProductsName{i} failed! {ex.Message}", 2);
+
                     }
 
                     try
@@ -2954,7 +2857,7 @@ namespace SellerScreen
                     }
                     catch (Exception ex)
                     {
-                        logWindow.NewLog($"Reading StaticsData/Total/highestEarningsProductsNumber{i} failed! {ex.Message}", 2);
+
                     }
 
                     try
@@ -2963,7 +2866,7 @@ namespace SellerScreen
                     }
                     catch (Exception ex)
                     {
-                        logWindow.NewLog($"Reading StaticsData/Total/highestEarningsProductsSinglePrice{i} failed! {ex.Message}", 2);
+
                     }
                 }
 
@@ -2972,13 +2875,16 @@ namespace SellerScreen
 
                 }
 
-                logWindow.NewLog($"Loading StaticsData/Total successful", 1);
             }
             catch (Exception ex)
             {
-                logWindow.NewLog($"Loading StaticsData/Total failed! {ex.Message}", 2);
+                log.NewLog($"Laden der Gesamtstatistiken fehlgeschlagen!", "Gesamtstatistiken", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
                 loadTotalStaticsError = true;
+            }
 
+            if (loadDayStaticsError == false)
+            {
+                log.NewLog($"Laden der Gesamtstatistiken erfolgreich!", "Gesamtstatistiken", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
             }
         }
 
@@ -3130,11 +3036,11 @@ namespace SellerScreen
                     }
                     lbl.Content += "€";
                 }
-                logWindow.NewLog($"Building StaticsData/Total successful", 1);
+                log.NewLog($"Bauen der Tagesstatistik erfolgreich!", "Tagesstatistiken", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
             }
             catch (Exception ex)
             {
-                logWindow.NewLog($"Building StaticsData/Total failed! {ex.Message}", 2);
+                log.NewLog($"Bauen der Tagesstatistik fehlgeschlagen!", "Tagesstatistiken", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
             }
         }
 
@@ -3156,12 +3062,11 @@ namespace SellerScreen
                 };
                 staDS.Save();
 
-                logWindow.NewLog($"Saving StaticsData/Day successful", 1);
+                log.NewLog($"Speichern der Tagesstatistiken erfolgreich!", "Tagesstatistiken", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
             }
             catch (Exception ex)
             {
-                logWindow.NewLog($"Saving StaticsData/Day failed! {ex.Message}", 2);
-
+                log.NewLog($"Speichern der Tagesstatistiken fehlgeschlagen!", "Tagesstatistiken", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
             }
         }
 
@@ -3179,7 +3084,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Day -> Reading SoldSlotCash failed! {ex.Message}", 2);
+
                     loadDayStaticsError = true;
                 }
                 try
@@ -3188,7 +3093,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Day -> Reading SoldSlotNumber failed! {ex.Message}", 2);
+
                     loadDayStaticsError = true;
                 }
                 try
@@ -3197,7 +3102,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Day -> Reading SoldSlotName failed! {ex.Message}", 2);
+
                     loadDayStaticsError = true;
                 }
                 try
@@ -3206,7 +3111,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Day -> Reading SoldSlotSinglePrice failed! {ex.Message}", 2);
+
                     loadDayStaticsError = true;
                 }
                 try
@@ -3215,7 +3120,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Day -> Reading LostCash failed! {ex.Message}", 2);
+
                     loadDayStaticsError = true;
                 }
                 try
@@ -3224,7 +3129,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Day -> Reading LostProducts failed! {ex.Message}", 2);
+
                     loadDayStaticsError = true;
                 }
                 try
@@ -3233,7 +3138,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Day -> Reading StaticsDayPcUsage failed! {ex.Message}", 2);
+
                     loadDayStaticsError = true;
                 }
                 try
@@ -3242,7 +3147,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Day -> Reading StaticsDayPcUsers failed! {ex.Message}", 2);
+
                     loadDayStaticsError = true;
                 }
                 try
@@ -3251,14 +3156,19 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading StaticsData/Day -> Reading StaticsDayPcName failed! {ex.Message}", 2);
+
                     loadDayStaticsError = true;
                 }
             }
             catch (Exception ex)
             {
-                logWindow.NewLog($"Loading StaticsData/Day failed! {ex.Message}", 2);
+                log.NewLog($"Laden der Tagesstatistiken fehlgeschlagen!", "Tagesstatistiken", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
                 loadDayStaticsError = true;
+            }
+
+            if (loadDayStaticsError == false)
+            {
+                log.NewLog($"Laden der Tagesstatistiken erfolgreich!", "Tagesstatistiken", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
             }
         }
 
@@ -3458,12 +3368,11 @@ namespace SellerScreen
                     }
                     StaticsDayLostCashNumberLbl.Content += "€";
 
-                    logWindow.NewLog($"Building StaticsData/Day successful", 1);
+                    log.NewLog($"Bauen der Tagesstatistiken erfolgreich!", "Tagesstatistiken", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Building StaticsData/Day failed! {ex.Message}", 2);
-
+                    log.NewLog($"Bauen der Tagesstatistiken fehlgeschlagen!", "Tagesstatistiken", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
                 }
             }
         }
@@ -3525,7 +3434,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading Settings -> Reading lastPayDate failded! {ex.Message}", 2);
+
                 }
                 try
                 {
@@ -3533,7 +3442,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading Settings -> Reading displayLogTypes failded! {ex.Message}", 2);
+
                 }
 
                 try
@@ -3542,15 +3451,14 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    logWindow.NewLog($"Error in Loading Settings -> Reading AppTheme failded! {ex.Message}", 2);
+
                 }
 
-                logWindow.NewLog($"Loading Settings successful", 1);
+                log.NewLog($"Laden der Einstellungen erfolgreich!", "Einstellungen", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
             }
             catch (Exception ex)
             {
-                logWindow.NewLog($"Loading Settings failed! {ex.Message}", 2);
-
+                log.NewLog($"Laden der Einstellungen fehlgeschlagen!", "Einstellungen", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
             }
         }
 
@@ -3564,13 +3472,11 @@ namespace SellerScreen
                 setS.displayLogTypes = displayLogTypes;
                 setS.AppTheme = AppThemeStr;
                 setS.Save();
-                logWindow.NewLog($"Saving Settings successful", 1);
-                logWindow.NewLog($"Settings changed!", 4);
+                log.NewLog($"Speichern der Einstellungen erfolgreich!", "Einstellungen", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
             }
             catch (Exception ex)
             {
-                logWindow.NewLog($"Saving Settings failded! {ex.Message}", 2);
-
+                log.NewLog($"Speichern der Einstellungen fehlgeschlagen!", "Einstellungen", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
             }
         }
 
@@ -3578,7 +3484,7 @@ namespace SellerScreen
         {
             try
             {
-                logWindow.displayLogTypes = displayLogTypes;
+                //log.displayLogTypes = displayLogTypes;
                 SettingsLogType0CheckBox.IsOn = displayLogTypes[0];
                 SettingsLogType1CheckBox.IsOn = displayLogTypes[1];
                 SettingsLogType2CheckBox.IsOn = displayLogTypes[2];
@@ -3604,12 +3510,11 @@ namespace SellerScreen
                     SettingsDesignLightTogSw.IsOn = false;
                 }
 
-                logWindow.NewLog($"Building Settings successful", 1);
+                log.NewLog($"Bauen der Einstellungen erfolgreich!", "Einstellungen", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Success);
             }
             catch (Exception ex)
             {
-                logWindow.NewLog($"Building Settings failded! {ex.Message}", 2);
-
+                log.NewLog($"Bauen der Einstellungen fehlgeschlagen!", "Einstellungen", ex.Message, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Error);
             }
         }
 
@@ -3650,7 +3555,7 @@ namespace SellerScreen
         {
             if (MessageBox.Show("Möchten Sie die Einstellungen wirklich auf Werkseinstellungen zurücksetzen?", "Einstellungen wiederherstellen", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                logWindow.NewLog("Restoring defaults...", 4);
+                log.NewLog($"Wiederherstellen der Einstellungen startet...", "Einstellungen", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Info);
 
                 lastPayDate = DateTime.Today;
 
@@ -3663,16 +3568,13 @@ namespace SellerScreen
                 SaveSettings();
                 LoadSettings();
                 BuildSettings();
-
-                logWindow.NewLog("Restored defaults!", 4);
             }
         }
 
         private void StartInstallationBtn_Click(object sender, RoutedEventArgs e)
         {
-            logWindow.NewLog("Starting installation...", 4);
+            log.NewLog($"Anwendung wird aktiviert...", "Anwendung", null, DateTime.Now, DateTime.Now, LogWindow.LogTypes.Info);
 
-            logWindow.NewLog("Setting up Settings...", 3);
             lastPayDate = DateTime.Today.AddDays(-1);
             displayLogTypes[0] = true;
             displayLogTypes[1] = false;
@@ -3681,7 +3583,6 @@ namespace SellerScreen
             displayLogTypes[4] = true;
             SaveSettings();
 
-            logWindow.NewLog("Setting up Storage...", 3);
             Array.Resize(ref StorageSlotName, StorageSlotName.Length + 1);
             StorageSlotName[StorageSlotName.Length - 1] = "Default";
 
@@ -3695,7 +3596,6 @@ namespace SellerScreen
             StorageSlotPrice[StorageSlotPrice.Length - 1] = 0;
             StorageSaver.RunWorkerAsync();
 
-            logWindow.NewLog("Setting up TotalStatics...", 3);
             StaticsTotalStartDate = DateTime.Today;
             StaticsTotalCustomers = 0;
             StaticsTotalSoldProducts = 0;
@@ -3708,22 +3608,8 @@ namespace SellerScreen
             TopBar.IsEnabled = true;
             AppInstallationMode = false;
             MessageBox.Show("Die Anwendung wurde aktiviert!", GetAssemblyTitle(), MessageBoxButton.OK, MessageBoxImage.Information);
+            NewMsgItem(MsgTypes.Success, "Anwendung", "Die Anwendung wurde aktiviert!", null);
             Reload();
-        }
-
-        private void SendLog_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                logWindow.SendEmail();
-                logWindow.NewLog("Fertig", 2);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Der Log-Bericht konnte nicht an T-App Germany übermittelt werden. Bitte überprüfen Sie Ihre Internetverbindung!", "ACHTUNG: PCS Fehlerbeicht", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);
-                logWindow.NewLog($"Senden: {ex.Message}", 2);
-
-            }
         }
 
         private void RefreshBtn_Click(object sender, RoutedEventArgs e)
