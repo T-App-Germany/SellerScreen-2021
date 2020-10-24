@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace SellerScreen_Logger
+namespace SellerScreen
 {
     /// <summary>
     /// Interaktionslogik für "App.xaml"

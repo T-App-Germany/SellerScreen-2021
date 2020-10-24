@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SellerScreen_Logger.Properties
+namespace SellerScreen.Properties
 {
 
 

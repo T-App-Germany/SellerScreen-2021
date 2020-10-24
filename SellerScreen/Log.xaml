@@ -1,0 +1,124 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ToggleSwitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch" x:Class="SellerScreen.LogWindow"
+        x:Name="Log"
+        mc:Ignorable="d"
+        Title="LogWindow" Height="600" Topmost="True" MinWidth="600" Width="600" Closing="LogWindow_Closing" WindowStyle="None" StateChanged="Log_StateChanged">
+    <Window.Resources>
+        <Style x:Key="WindowMainPanelStyle" TargetType="{x:Type Border}">
+            <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderBrush}" />
+            <Setter Property="BorderThickness" Value="3" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" Value="Maximized">
+                    <Setter Property="Margin" Value="6" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="60" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"/>
+    </WindowChrome.WindowChrome>
+    <Border Style="{StaticResource WindowMainPanelStyle}" BorderBrush="Black">
+        <Grid Background="{Binding Background, ElementName=PageBackgroudColor}">
+            <StackPanel x:Name="ElementsToCopy" Visibility="Collapsed">
+                <Border x:Name="LogErrorItemTemp" BorderBrush="Black" BorderThickness="0,1,0,0">
+                    <Grid Background="DarkRed">
+                        <Viewbox Width="32" Height="32" Margin="10" HorizontalAlignment="Left">
+                            <Rectangle Width="32" Height="32">
+                                <Rectangle.Fill>
+                                    <DrawingBrush>
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M15,15L14.294,15C13.523,15.616 12.561,16 11.5,16 10.439,16 9.477,15.616 8.707,15L1,15 1,0 15,0 15,8.707C15.616,9.477 16,10.439 16,11.5 16,12.561 15.616,13.523 15,14.294z" />
+                                                <GeometryDrawing Brush="#FF424242" Geometry="F1M7.2764,13L4.0004,13 4.0004,2 13.0004,2 13.0004,7.276C13.3534,7.402,13.6934,7.556,14.0004,7.762L14.0004,1 2.0004,1 2.0004,2 3.0004,2 3.0004,3 2.0004,3 2.0004,4 3.0004,4 3.0004,5 2.0004,5 2.0004,6 3.0004,6 3.0004,7 2.0004,7 2.0004,8 3.0004,8 3.0004,9 2.0004,9 2.0004,10 3.0004,10 3.0004,11 2.0004,11 2.0004,12 3.0004,12 3.0004,13 2.0004,13 2.0004,14 7.7614,14C7.5564,13.693,7.4024,13.354,7.2764,13 M11.0004,4L11.0004,5 11.0004,6 6.0004,6 6.0004,5 6.0004,4z" />
+                                                <GeometryDrawing Brush="#FFF0EFF1" Geometry="F1M6,5L6,4 11,4 11,5 11,6 6,6z M7,11.5C7,9.019 9.019,7 11.5,7 12.028,7 12.528,7.108 13,7.276L13,2 4,2 4,13 7.276,13C7.108,12.528,7,12.028,7,11.5" />
+                                                <GeometryDrawing Brush="#FFE51400" Geometry="F1M13.3535,12.6465L12.6465,13.3535 11.4995,12.2075 10.3535,13.3535 9.6465,12.6465 10.7925,11.5005 9.6465,10.3535 10.3535,9.6465 11.4995,10.7925 12.6465,9.6465 13.3535,10.3535 12.2075,11.5005z M11.4995,8.0005C9.5675,8.0005 7.9995,9.5675 7.9995,11.5005 7.9995,13.4325 9.5675,15.0005 11.4995,15.0005 13.4325,15.0005 14.9995,13.4325 14.9995,11.5005 14.9995,9.5675 13.4325,8.0005 11.4995,8.0005" />
+                                                <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1M12.207,11.5L13.353,12.646 12.646,13.354 11.5,12.207 10.353,13.354 9.646,12.646 10.793,11.5 9.646,10.354 10.353,9.646 11.5,10.793 12.646,9.646 13.353,10.354z" />
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Viewbox>
+                        <StackPanel Margin="52,10,10,10">
+                            <TextBlock x:Name="LogErrorHeaderTemp" Text="Lager" FontSize="18" Foreground="White" FontWeight="Bold" Margin="5,5,5,0"/>
+                            <TextBlock x:Name="LogErrorTextTemp" FontSize="15" Foreground="White" TextWrapping="WrapWithOverflow" Margin="5,0,5,5"><Run Text="Produkt 0 konnte nicht geladen werden."/><LineBreak/><Run Text="Der Index war außerhalb des Arraybereichs." FontStyle="Italic"/></TextBlock>
+                            <TextBlock x:Name="LogErrorInfoTxtTemp" Text="ID: 000          Start: 00.00.0000 00:00 Uhr          Ende: 00.00.0000 00:00 Uhr" Foreground="White" Padding="0" Margin="5"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border x:Name="LogWarningItemTemp" BorderBrush="Black" BorderThickness="0,1,0,0">
+                    <Grid Background="DarkOrange">
+                        <Viewbox Width="32" Height="32" Margin="10" HorizontalAlignment="Left">
+                            <Rectangle Width="32" Height="32">
+                                <Rectangle.Fill>
+                                    <DrawingBrush>
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M0.9999,-0.000199999999999534L0.9999,14.9998 7.4999,14.9998 7.9999,15.9998 14.9999,15.9998 15.9999,13.9998 14.9999,12.0008 14.9999,-0.000199999999999534z" />
+                                                <GeometryDrawing Brush="#FF424242" Geometry="F1M7.4854,13L4.0004,13 4.0004,2 13.0004,2 13.0004,8.002 14.0004,10.018 14.0004,1 2.0004,1 2.0004,2 3.0004,2 3.0004,3 2.0004,3 2.0004,4 3.0004,4 3.0004,5 2.0004,5 2.0004,6 3.0004,6 3.0004,7 2.0004,7 2.0004,8 3.0004,8 3.0004,9 2.0004,9 2.0004,10 3.0004,10 3.0004,11 2.0004,11 2.0004,12 3.0004,12 3.0004,13 2.0004,13 2.0004,14 6.9824,14z M11.0004,4L11.0004,5 11.0004,6 6.0004,6 6.0004,5 6.0004,4z" />
+                                                <GeometryDrawing Brush="#FFF0EFF1" Geometry="F1M6,4L11,4 11,6 6,6z M10.477,7.048L10.5,7 13,7 13,2.025 4.04,2.014 4,12.993 7.489,12.993z" />
+                                                <GeometryDrawing Brush="#FFFFCC00" Geometry="F1M12,12L11,12 11,10 12,10z M12,14L11,14 11,13 12,13z M11.891,8.016L11.109,8.016 8.094,14.016 8.609,15 14.375,15 14.859,14z" />
+                                                <GeometryDrawing Brush="#FF000000" Geometry="F1M11,12L12,12 12,9.999 11,9.999z M11,14L12,14 12,13 11,13z" />
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Viewbox>
+                        <StackPanel Margin="52,10,10,10">
+                            <TextBlock x:Name="LogWarningHeaderTemp" Text="Lager" FontSize="18" Foreground="White" FontWeight="Bold" Margin="5,5,5,0"/>
+                            <TextBlock x:Name="LogWarningTextTemp" FontSize="15" Foreground="White" TextWrapping="WrapWithOverflow" Margin="5,0,5,5"><Run Text="Das bearbeitete Produkt 0 enthält Fehler. Es kann nicht Verkauft werden."/><LineBreak/><Run Text="Der Produktname ist unvollständig." FontStyle="Italic"/></TextBlock>
+                            <TextBlock x:Name="LogWarningInfoTxtTemp" Text="ID: 000         00.00.0000 00:00 Uhr" Padding="0" Margin="5" Foreground="White"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+            <Grid x:Name="BindingElements" Visibility="Collapsed">
+                <Grid x:Name="TextFontColor" Background="White"/>
+                <Grid x:Name="SideBarsColor" Background="#48484A"/>
+                <Grid x:Name="PageBackgroudColor" Background="#FF323232"/>
+                <Grid x:Name="ChromeBtnColor" Background="#FFF6F6F6"/>
+            </Grid>
+            <StackPanel x:Name="ToolPanel" Orientation="Horizontal" VerticalAlignment="Top" Background="{Binding Background, ElementName=SideBarsColor}">
+                <Label Content="Einfach" FontSize="20" Margin="10"/>
+                <Viewbox Height="27" WindowChrome.IsHitTestVisibleInChrome="True">
+                    <ToggleSwitch:ToggleSwitch x:Name="LogModeSwitch" TrackBackgroundOffColor="#FF5395E4" TrackBackgroundOnColor="#FF3BB43B" PreviewMouseDown="LogModeSwitch_PreviewMouseDown"/>
+                </Viewbox>
+                <Label Content="Erweitert" FontSize="20" Margin="10"/>
+            </StackPanel>
+            <Grid x:Name="NormalModeGrid" Margin="0,60,0,0">
+                <ScrollViewer x:Name="ScrollView">
+                    <StackPanel x:Name="LogItemPanel"/>
+                </ScrollViewer>
+            </Grid>
+            <Grid x:Name="ExpertModeGrid" Margin="0,60,0,0" Visibility="Collapsed">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                    <TextBox x:Name="LogTxtBlock" FontFamily="Consolas" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0"/>
+                </ScrollViewer>
+            </Grid>
+            <ProgressBar x:Name="ProgBar" VerticalAlignment="Top" Visibility="Collapsed"/>
+            <Button x:Name="ChromeMinimizeBtn" HorizontalAlignment="Right" VerticalAlignment="Top" WindowChrome.IsHitTestVisibleInChrome="True" Click="ChromeMinimizeBtn_Click">
+                <Viewbox Width="32" Height="32">
+                    <Rectangle Width="32" Height="32">
+                        <Rectangle.Fill>
+                            <DrawingBrush>
+                                <DrawingBrush.Drawing>
+                                    <DrawingGroup>
+                                        <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                        <GeometryDrawing Brush="{Binding Background, ElementName=ChromeBtnColor}" Geometry="F1M3,8L13,8 13,7 3,7z" />
+                                    </DrawingGroup>
+                                </DrawingBrush.Drawing>
+                            </DrawingBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Viewbox>
+            </Button>
+        </Grid>
+    </Border>
+</Window>

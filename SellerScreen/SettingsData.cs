@@ -8,7 +8,6 @@ namespace SellerScreen
     public class SettingsData
     {
         public DateTime lastPayDate;
-        public bool[] displayLogTypes = new bool[4];
         public short StorageLimitedNumber;
         public string AppTheme;
 

@@ -144,8 +144,6 @@ C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\SellerScreen.
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\SellerScreen.application
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\SellerScreen.exe
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\SellerScreen.pdb
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\SellerScreen.exe.CodeAnalysisLog.xml
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\SellerScreen.exe.lastcodeanalysissucceeded
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\Microsoft.Toolkit.Win32.UI.XamlHost.xml
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\LiveCharts.dll
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\LiveCharts.Wpf.dll
@@ -153,15 +151,12 @@ C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\Microsoft.Too
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\Microsoft.Toolkit.Win32.UI.XamlHost.winmd
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\Microsoft.Toolkit.Wpf.UI.Controls.dll
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\Microsoft.Toolkit.Wpf.UI.XamlHost.dll
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\SellerScreen Logger.exe
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\ToggleSwitch.dll
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\Xceed.Wpf.AvalonDock.dll
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Aero.dll
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\Xceed.Wpf.AvalonDock.Themes.VS2010.dll
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\Xceed.Wpf.Toolkit.dll
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\SellerScreen Logger.pdb
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\SellerScreen Logger.exe.config
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\LiveCharts.pdb
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\LiveCharts.xml
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\LiveCharts.Wpf.pdb
@@ -184,9 +179,10 @@ C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\ro\Xceed.Wpf.
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.csprojAssemblyReference.cache
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\EditStorageSlot.baml
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\Log.baml
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\EditStorageSlot.g.cs
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\Log.g.cs
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\MainWindow.g.cs
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\MsgBox.g.cs
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\App.g.cs

@@ -16,3 +16,6 @@ C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\Seller
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger.exe
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger.pdb
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger.csprojAssemblyReference.cache
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\bin\Debug\ToggleSwitch.dll
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\bin\Debug\ToggleSwitch.pdb
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen Logger\obj\Debug\SellerScreen Logger.csproj.CopyComplete

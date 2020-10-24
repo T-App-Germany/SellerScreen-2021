@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SellerScreen", "SellerScreen\SellerScreen.csproj", "{A01890B0-D586-4A23-9CB8-68E8B72055B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SellerScreen Logger", "SellerScreen Logger\SellerScreen Logger.csproj", "{440748D9-5E80-4707-975B-94D146662DC1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SellerScreen Installer", "SellerScreen Installer\SellerScreen Installer.csproj", "{119FA9EA-7CF4-4C07-9D93-329024219295}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{A01890B0-D586-4A23-9CB8-68E8B72055B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A01890B0-D586-4A23-9CB8-68E8B72055B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A01890B0-D586-4A23-9CB8-68E8B72055B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{440748D9-5E80-4707-975B-94D146662DC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{440748D9-5E80-4707-975B-94D146662DC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{440748D9-5E80-4707-975B-94D146662DC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{440748D9-5E80-4707-975B-94D146662DC1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{119FA9EA-7CF4-4C07-9D93-329024219295}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{119FA9EA-7CF4-4C07-9D93-329024219295}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{119FA9EA-7CF4-4C07-9D93-329024219295}.Release|Any CPU.ActiveCfg = Release|Any CPU

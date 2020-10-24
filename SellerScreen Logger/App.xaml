@@ -1,8 +1,8 @@
-﻿<Application x:Class="SellerScreen_Logger.App"
+﻿<Application x:Class="SellerScreen.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:SellerScreen_Logger"
-             StartupUri="Log.xaml">
+             xmlns:local="clr-namespace:SellerScreen"
+             StartupUri="MainWindow.xaml">
     <Application.Resources>
         <Style TargetType="{x:Type Button}">
             <Setter Property="SnapsToDevicePixels" Value="true"/>

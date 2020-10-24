@@ -209,15 +209,6 @@
             "rid": "win10-x86"
           }
         }
-      },
-      "SellerScreen Logger/1.0.0": {
-        "type": "project",
-        "compile": {
-          "bin/placeholder/SellerScreen Logger.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/SellerScreen Logger.dll": {}
-        }
       }
     },
     ".NETFramework,Version=v4.8/win": {
@@ -225,15 +216,6 @@
         "type": "package",
         "build": {
           "build/net45/Microsoft.VCRTForwarders.140.targets": {}
-        }
-      },
-      "SellerScreen Logger/1.0.0": {
-        "type": "project",
-        "compile": {
-          "bin/placeholder/SellerScreen Logger.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/SellerScreen Logger.dll": {}
         }
       }
     },
@@ -243,15 +225,6 @@
         "build": {
           "build/net45/Microsoft.VCRTForwarders.140.targets": {}
         }
-      },
-      "SellerScreen Logger/1.0.0": {
-        "type": "project",
-        "compile": {
-          "bin/placeholder/SellerScreen Logger.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/SellerScreen Logger.dll": {}
-        }
       }
     },
     ".NETFramework,Version=v4.8/win-x86": {
@@ -259,15 +232,6 @@
         "type": "package",
         "build": {
           "build/net45/Microsoft.VCRTForwarders.140.targets": {}
-        }
-      },
-      "SellerScreen Logger/1.0.0": {
-        "type": "project",
-        "compile": {
-          "bin/placeholder/SellerScreen Logger.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/SellerScreen Logger.dll": {}
         }
       }
     }
@@ -358,17 +322,11 @@
         "runtimes/win10-x86/native/release/vcomp140_app.dll",
         "runtimes/win10-x86/native/release/vcruntime140_app.dll"
       ]
-    },
-    "SellerScreen Logger/1.0.0": {
-      "type": "project",
-      "path": "../SellerScreen Logger/SellerScreen Logger.csproj",
-      "msbuildProject": "../SellerScreen Logger/SellerScreen Logger.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.8": [
-      "Microsoft.VCRTForwarders.140 >= 1.0.6",
-      "SellerScreen Logger >= 1.0.0"
+      "Microsoft.VCRTForwarders.140 >= 1.0.6"
     ]
   },
   "packageFolders": {
@@ -397,11 +355,7 @@
       },
       "frameworks": {
         "net48": {
-          "projectReferences": {
-            "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen Logger\\SellerScreen Logger.csproj": {
-              "projectPath": "C:\\Users\\Tom Mohr\\Source\\Repos\\SellerScreen\\SellerScreen Logger\\SellerScreen Logger.csproj"
-            }
-          }
+          "projectReferences": {}
         }
       }
     },
