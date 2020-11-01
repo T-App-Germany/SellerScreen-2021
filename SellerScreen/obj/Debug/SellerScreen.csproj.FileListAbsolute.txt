@@ -184,14 +184,12 @@ C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\Log.baml
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\EditStorageSlot.g.cs
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\Log.g.cs
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\MainWindow.g.cs
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\MsgBox.g.cs
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\App.g.cs
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen_Content.g.cs
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen_MarkupCompile.cache
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen_MarkupCompile.lref
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\App.baml
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\MainWindow.baml
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\MsgBox.baml
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.g.resources
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.Properties.Resources.resources
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.csproj.GenerateResource.cache
@@ -202,3 +200,4 @@ C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.csproj.CopyComplete
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.exe
 C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.pdb
+C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Debug\SellerScreen.csprojAssemblyReference.cache

@@ -699,39 +699,10 @@
                                         <Border BorderBrush="{Binding Background, ElementName=SeperatorColor}" BorderThickness="2" CornerRadius="3" Margin="10">
                                             <StackPanel>
                                                 <StackPanel Background="{Binding Background, ElementName=SideBarsColor}" Margin="0,0,0,5">
-                                                    <Label Content="Log" FontSize="20" Margin="10"/>
+                                                    <Label Content="Lager" FontSize="20" Margin="10"/>
                                                 </StackPanel>
                                                 <StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="10">
-                                                        <Viewbox Height="27">
-                                                            <ToggleSwitch:ToggleSwitch x:Name="SettingsLogType0CheckBox"/>
-                                                        </Viewbox>
-                                                        <Label Content="Anwendungs Informationen" FontSize="15"/>
-                                                    </StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="10">
-                                                        <Viewbox Height="27">
-                                                            <ToggleSwitch:ToggleSwitch x:Name="SettingsLogType4CheckBox"/>
-                                                        </Viewbox>
-                                                        <Label Content="Anwendungs Aufträge" FontSize="15"/>
-                                                    </StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="10">
-                                                        <Viewbox Height="27">
-                                                            <ToggleSwitch:ToggleSwitch x:Name="SettingsLogType2CheckBox"/>
-                                                        </Viewbox>
-                                                        <Label Content="Fehler (empfohlen)" FontSize="15"/>
-                                                    </StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="10">
-                                                        <Viewbox Height="27">
-                                                            <ToggleSwitch:ToggleSwitch x:Name="SettingsLogType1CheckBox"/>
-                                                        </Viewbox>
-                                                        <Label Content="Erfolgreich (nicht empfohlen)" FontSize="15"/>
-                                                    </StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Margin="10">
-                                                        <Viewbox Height="27">
-                                                            <ToggleSwitch:ToggleSwitch x:Name="SettingsLogType3CheckBox"/>
-                                                        </Viewbox>
-                                                        <Label Content="Ereignisse (nicht empfohlen)" FontSize="15"/>
-                                                    </StackPanel>
+                                                    
                                                 </StackPanel>
                                             </StackPanel>
                                         </Border>

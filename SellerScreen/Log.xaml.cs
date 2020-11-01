@@ -25,13 +25,13 @@ namespace SellerScreen
             Bauen,
             Ändern,
             Geladen,
-            Herunterfahren,
+            Beenden,
             Abbrechen,
             Lesen,
             Verkaufen,
             Stornieren,
             Rücknehmen,
-            Wiederherstellen,
+            Reset,
             Aktiviert
         };
         public enum LogThread
@@ -69,37 +69,6 @@ namespace SellerScreen
             SetAppTheme();
         }
 
-        private void SavingLog(object sender, ProgressChangedEventArgs e)
-        {
-            ProgBar.Value = e.ProgressPercentage;
-            ProgBar.Visibility = Visibility.Visible;
-        }
-
-        private void LogSaved(object sender, RunWorkerCompletedEventArgs e)
-        {
-            ProgBar.Value = 0;
-            ProgBar.Visibility = Visibility.Collapsed;
-
-            if (linesToSave != Array.Empty<string>() && LogSaver.IsBusy == false)
-            {
-                LogSaver.RunWorkerAsync(linesToSave);
-                linesToSave = Array.Empty<string>();
-            }
-        }
-
-        private void SaveLog(object sender, DoWorkEventArgs e)
-        {
-            string[] lines = (string[])e.Argument;
-            try
-            {
-                File.AppendAllLines(Path.Combine(pathN.logFile, $"log-{DateTime.Now.Day}_{DateTime.Now.Month}_{DateTime.Now.Year}.txt"), lines);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Schreiben der Log-Datei nicht möglich!\n\n{ex}", "Log Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
         public void NewLog(LogTypes type, LogThread thread, LogActions action, string exception, DateTime end, TimeSpan duration)
         {
             string xamlString;
@@ -107,7 +76,7 @@ namespace SellerScreen
             XmlReader xmlReader;
             Border item = new Border();
             id++;
-            string info = $"{DateTime.Now.ToShortDateString()}, {DateTime.Now.ToLongTimeString()} Uhr";
+            string info = $"{end.ToShortDateString()}, {end.ToLongTimeString()} Uhr";
             info += $" | {id}";
             int repeat = 5 - id.ToString().Length;
             for (int i = 0; i < repeat; i++)
@@ -130,15 +99,23 @@ namespace SellerScreen
             }
 
             info += $" | {action}";
+            repeat = 10 - action.ToString().Length;
+            for (int i = 0; i < repeat; i++)
+            {
+                info += " ";
+            }
+
+            info += $" | {duration.TotalSeconds}";
+            repeat = 9 - duration.TotalSeconds.ToString().Length;
+            for (int i = 0; i < repeat; i++)
+            {
+                info += " ";
+            }
+
             if (!string.IsNullOrEmpty(exception))
             {
                 char trim = '\n';
                 exception.TrimStart(trim);
-                repeat = 9 - action.ToString().Length;
-                for (int i = 0; i < repeat; i++)
-                {
-                    info += " ";
-                }
                 info += $"{exception}";
             }
             LogTxtBlock.Text += $"\n{info}";
@@ -189,6 +166,37 @@ namespace SellerScreen
 
             LogItemPanel.Children.Add(item);
             ScrollView.ScrollToBottom();
+        }
+
+        private void SavingLog(object sender, ProgressChangedEventArgs e)
+        {
+            ProgBar.Value = e.ProgressPercentage;
+            ProgBar.Visibility = Visibility.Visible;
+        }
+
+        private void LogSaved(object sender, RunWorkerCompletedEventArgs e)
+        {
+            ProgBar.Value = 0;
+            ProgBar.Visibility = Visibility.Collapsed;
+
+            if (linesToSave != Array.Empty<string>() && LogSaver.IsBusy == false)
+            {
+                LogSaver.RunWorkerAsync(linesToSave);
+                linesToSave = Array.Empty<string>();
+            }
+        }
+
+        private void SaveLog(object sender, DoWorkEventArgs e)
+        {
+            string[] lines = (string[])e.Argument;
+            try
+            {
+                File.AppendAllLines(Path.Combine(pathN.logFile, $"log-{DateTime.Now.Day}_{DateTime.Now.Month}_{DateTime.Now.Year}.txt"), lines);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Schreiben der Log-Datei nicht möglich!\n\n{ex}", "Log Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LogWindow_Closing(object sender, CancelEventArgs e)

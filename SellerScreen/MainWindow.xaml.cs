@@ -94,17 +94,24 @@ namespace SellerScreen
             Storage,
             FileManager
         }
+        private enum ShopPayMode
+        {
+            Sell,
+            Cancel,
+            Complain
+        }
+        private enum ShopBuildingInput
+        {
+            Storage,
+            DayStatics
+        }
 
         private DispatcherTimer MessageTimer { get; set; } = new DispatcherTimer();
         private DispatcherTimer StaticsDaySelectionTimer { get; set; } = new DispatcherTimer();
         private DispatcherTimer SideObjectsAniTimer { get; set; } = new DispatcherTimer();
-        private BackgroundWorker StorageLoader { get; set; } = new BackgroundWorker();
         private BackgroundWorker StorageSaver { get; set; } = new BackgroundWorker();
-        private BackgroundWorker TotalStaticsLoader { get; set; } = new BackgroundWorker();
         private BackgroundWorker TotalStaticsSaver { get; set; } = new BackgroundWorker();
-        private BackgroundWorker DayStaticsLoader { get; set; } = new BackgroundWorker();
         private BackgroundWorker DayStaticsSaver { get; set; } = new BackgroundWorker();
-        private BackgroundWorker SettingsLoader { get; set; } = new BackgroundWorker();
         private BackgroundWorker SettingsSaver { get; set; } = new BackgroundWorker();
         public object RegistryKeyPath { get; private set; }
 
@@ -134,7 +141,7 @@ namespace SellerScreen
 
         private short selectedItemsInt = 0;
         private short[] ShopSlotSelectedNumber = Array.Empty<short>();
-        private string ShopTask = "";
+        private ShopPayMode ShopTask;
         private double ShopMainPrice = 0;
 
         private string[] StaticsDaySoldSlotName = Array.Empty<string>();
@@ -186,6 +193,7 @@ namespace SellerScreen
         private DateTime SettingsBuildStart;
         private bool disposedValue;
         private DateTime SettingsLoadStart;
+        private DateTime DayStaticsSaveStart;
 
         //private string[] planedUserNameList = Array.Empty<string>();
         //private int[] plannedUserStartTimeList = Array.Empty<int>();
@@ -202,7 +210,7 @@ namespace SellerScreen
             Page1HeaderLbl.Content = "Willkommen bei " + GetAssemblyTitle();
 
             MessageTimer.Tick += new EventHandler(MessageTimer_Tick);
-            MessageTimer.Interval = new TimeSpan(0, 0, 0, 10);
+            MessageTimer.Interval = new TimeSpan(0, 0, 0, 5);
 
             StaticsDaySelectionTimer.Tick += new EventHandler(StaticsDaySelectionTimer_Tick);
             StaticsDaySelectionTimer.Interval = new TimeSpan(0, 0, 0, 1, 5);
@@ -210,37 +218,25 @@ namespace SellerScreen
             SideObjectsAniTimer.Tick += new EventHandler(AniTimer_Tick);
             SideObjectsAniTimer.Interval = new TimeSpan(0, 0, 0, 2);
 
-            StorageLoader.DoWork += new DoWorkEventHandler(StorageLoaderRun);
-            StorageLoader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(StorageLoadComplete);
-            StorageLoader.ProgressChanged += new ProgressChangedEventHandler(StorageLoaderProgress);
-
             StorageSaver.DoWork += new DoWorkEventHandler(StorageStorageSaverRun);
             StorageSaver.RunWorkerCompleted += new RunWorkerCompletedEventHandler(StorageSaverComplete);
             StorageSaver.ProgressChanged += new ProgressChangedEventHandler(StorageSaverProgress);
-
-            TotalStaticsLoader.DoWork += new DoWorkEventHandler(TotalStaticsLoaderRun);
-            TotalStaticsLoader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(TotalStaticsLoaderComplete);
-            TotalStaticsLoader.ProgressChanged += new ProgressChangedEventHandler(TotalStaticsLoaderProgress);
+            StorageSaver.WorkerSupportsCancellation = true;
 
             TotalStaticsSaver.DoWork += new DoWorkEventHandler(TotalStaticsSaverRun);
             TotalStaticsSaver.RunWorkerCompleted += new RunWorkerCompletedEventHandler(TotalStaticsSaverComplete);
             TotalStaticsSaver.ProgressChanged += new ProgressChangedEventHandler(TotalStaticsSaverProgress);
-
-            DayStaticsLoader.DoWork += new DoWorkEventHandler(DayStaticsLoaderRun);
-            DayStaticsLoader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DayStaticsLoaderComplete);
-            DayStaticsLoader.ProgressChanged += new ProgressChangedEventHandler(DayStaticsLoaderProgress);
+            TotalStaticsSaver.WorkerSupportsCancellation = true;
 
             DayStaticsSaver.DoWork += new DoWorkEventHandler(DayStaticsSaverRun);
             DayStaticsSaver.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DayStaticsSaverComplete);
             DayStaticsSaver.ProgressChanged += new ProgressChangedEventHandler(DayStaticsSaverProgress);
+            DayStaticsSaver.WorkerSupportsCancellation = true;
 
             SettingsSaver.DoWork += new DoWorkEventHandler(SettingsSaverRun);
             SettingsSaver.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SettingsSaverComplete);
             SettingsSaver.ProgressChanged += new ProgressChangedEventHandler(SettingsSaverProgress);
-
-            SettingsLoader.DoWork += new DoWorkEventHandler(SettingsLoaderRun);
-            SettingsLoader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SettingsLoaderComplete);
-            SettingsLoader.ProgressChanged += new ProgressChangedEventHandler(SettingsLoaderProgress);
+            SettingsSaver.WorkerSupportsCancellation = true;
 
             Directory.CreateDirectory(Path.GetDirectoryName(pathN.settingsFile));
             Directory.CreateDirectory(Path.GetDirectoryName(pathN.productsFile));
@@ -275,13 +271,14 @@ namespace SellerScreen
             StaticsDayYearUpDown.Maximum = DateTime.Now.Year;
             StaticsDayMonthUpDown.Value = DateTime.Now.Month;
             log.NewLog(LogWindow.LogTypes.Info, LogWindow.LogThread.Anwendung, LogWindow.LogActions.Geladen, null, DateTime.Now, DateTime.Now - ApplicationStart);
+
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             if (MessageBox.Show($"Möchten Sie {Title} wirklich schließen?", "Anwendung schließen", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                log.NewLog(LogWindow.LogTypes.Info, LogWindow.LogThread.Anwendung, LogWindow.LogActions.Herunterfahren, null, DateTime.Now, TimeSpan.Zero);
+                log.NewLog(LogWindow.LogTypes.Info, LogWindow.LogThread.Anwendung, LogWindow.LogActions.Beenden, null, DateTime.Now, TimeSpan.Zero);
                 Application.Current.Shutdown();
             }
             else
@@ -691,10 +688,10 @@ namespace SellerScreen
 
         private void Reload()
         {
-            SettingsLoader.RunWorkerAsync();
-            StorageLoader.RunWorkerAsync();
-            TotalStaticsLoader.RunWorkerAsync();
-            DayStaticsLoader.RunWorkerAsync(DateTime.Now.Date);
+            SettingsLoader();
+            StorageLoader();
+            TotalStaticsLoader();
+            DayStaticsLoader(DateTime.Now.Date);
         }
 
         private void MainProgBarShow()
@@ -757,8 +754,8 @@ namespace SellerScreen
             ChromeBtnColor.Background = themeData.GetLightTheme("ChromeBtnColor");
             Theme = AppTheme.Light;
 
-            StorageBuilder();
-            BuildShop(AppThemeStr, "storage");
+            BuildStorage();
+            BuildShop(ShopBuildingInput.Storage);
         }
 
         private void ApplyDarkTheme()
@@ -771,8 +768,8 @@ namespace SellerScreen
             ChromeBtnColor.Background = themeData.GetDarkTheme("ChromeBtnColor");
             Theme = AppTheme.Dark;
 
-            StorageBuilder();
-            BuildShop(AppThemeStr, "storage");
+            BuildStorage();
+            BuildShop(ShopBuildingInput.Storage);
         }
 
         private void SlotItemMouseLeave(object sender, MouseEventArgs e)
@@ -1029,7 +1026,7 @@ namespace SellerScreen
             {
                 int tag = int.Parse(btn.Tag.ToString());
                 short maxCount;
-                if (ShopTask == "sell")
+                if (ShopTask == ShopPayMode.Sell)
                 {
                     maxCount = StorageSlotNumber[tag];
                 }
@@ -1058,7 +1055,7 @@ namespace SellerScreen
             {
                 short tag = short.Parse(iup.Tag.ToString());
                 short maxCount;
-                if (ShopTask == "sell")
+                if (ShopTask == ShopPayMode.Sell)
                 {
                     maxCount = StorageSlotNumber[tag];
                 }
@@ -1081,7 +1078,7 @@ namespace SellerScreen
             }
         }
 
-        private void BuildShop(string theme, string from)
+        private void BuildShop(ShopBuildingInput from)
         {
             ShopBuildingStart = DateTime.Now;
             int length = 0;
@@ -1090,7 +1087,7 @@ namespace SellerScreen
             double price = 0;
             bool status = false;
 
-            if (from == "storage")
+            if (from == ShopBuildingInput.Storage)
             {
                 length = InStorageSlots.Length;
                 Array.Resize(ref ShopSlotSelectedNumber, InStorageSlots.Length);
@@ -1109,7 +1106,7 @@ namespace SellerScreen
                 {
                     switch (from)
                     {
-                        case "storage":
+                        case ShopBuildingInput.Storage:
                             name = StorageSlotName[i];
                             number = StorageSlotNumber[i];
                             price = StorageSlotPrice[i];
@@ -1120,7 +1117,7 @@ namespace SellerScreen
                             }
                             break;
 
-                        case "statics":
+                        case ShopBuildingInput.DayStatics:
                             name = StaticsDaySoldSlotName[i];
                             number = StaticsDaySoldSlotNumber[i];
                             price = StaticsDaySoldSlotSinglePrice[i];
@@ -1147,7 +1144,7 @@ namespace SellerScreen
                         StringReader stringReader;
                         XmlReader xmlReader;
 
-                        if (from == "storage")
+                        if (from == ShopBuildingInput.Storage)
                         {
                             if (status == true)
                             {
@@ -1352,7 +1349,7 @@ namespace SellerScreen
                         }
                         else
                         {
-                            if (theme == "Light")
+                            if (AppThemeStr == "Light")
                             {
                                 slotScp.Background = Brushes.LightGray;
                             }
@@ -1435,11 +1432,14 @@ namespace SellerScreen
                         RegisterName(slotScp.Name, slotScp);
                     }
                 }
+
                 log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Kasse, LogWindow.LogActions.Bauen, null, DateTime.Now, DateTime.Now - ShopBuildingStart);
+                NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Kasse, "Bauen der Kasse erfolgreich!", null);
             }
             catch (Exception ex)
             {
                 log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Kasse, LogWindow.LogActions.Bauen, ex.Message, DateTime.Now, DateTime.Now - ShopBuildingStart);
+                NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Kasse, "Bauen der Kasse fehlgeschlagen!", ex.Message);
             }
 
             NewPurchaseBtn.IsEnabled = true;
@@ -1466,230 +1466,10 @@ namespace SellerScreen
             }
         }
 
-        //private void BuildStaticsToShop()
-        //{
-        //    Reload();
-        //    bool panelWasGrey = false;
-
-        //    try
-        //    {
-        //        StaticsDayData staDL = StaticsDayData.Load(DateTime.Now.Date);
-        //        ShopSlotsPanel.Children.Clear();
-        //        for (int i = 0; i < SoldSlotSinglePrice.Length; i++)
-        //        {
-        //            Array.Resize(ref ShopSlotSelectedNumber, SoldSlotSinglePrice.Length);
-
-        //            if (SoldSlotNumber[i] > 0)
-        //            {
-        //                StackPanel slotScp = new StackPanel
-        //                {
-        //                    Name = $"ShopSlot{i}SlotPanel",
-        //                    Tag = i,
-        //                    Margin = new Thickness(0),
-        //                    Orientation = Orientation.Horizontal
-        //                };
-        //                slotScp.MouseEnter += new MouseEventHandler(SlotItemMouseEnter);
-        //                slotScp.MouseLeave += new MouseEventHandler(SlotItemMouseLeave);
-        //                if (panelWasGrey == true)
-        //                {
-        //                    slotScp.Background = Brushes.LightGray;
-        //                    panelWasGrey = false;
-        //                }
-        //                else
-        //                {
-        //                    slotScp.Background = Brushes.White;
-        //                    panelWasGrey = true;
-        //                }
-
-        //                Rectangle statusRtg = new Rectangle()
-        //                {
-        //                    Name = $"ShopSlot{i}StatusRtg",
-        //                    Tag = i,
-        //                    Height = 20,
-        //                    Width = 20,
-        //                    HorizontalAlignment = HorizontalAlignment.Center,
-        //                    VerticalAlignment = VerticalAlignment.Center,
-        //                    Margin = new Thickness(28, 5, 40, 5),
-        //                    RadiusX = 10,
-        //                    RadiusY = 10,
-        //                    Fill = Brushes.Green
-        //                };
-
-        //                TextBlock nameLbl = new TextBlock
-        //                {
-        //                    Name = $"ShopSlot{i}NameLbl",
-        //                    Tag = i,
-        //                    Margin = new Thickness(10),
-        //                    Width = 370,
-        //                    VerticalAlignment = VerticalAlignment.Center,
-        //                    Padding = new Thickness(5),
-        //                    FontSize = 20,
-        //                    Text = $"{SoldSlotName[i]}",
-        //                    ToolTip = $"{SoldSlotName[i]}",
-        //                    TextWrapping = TextWrapping.NoWrap,
-        //                    TextTrimming = TextTrimming.CharacterEllipsis
-        //                };
-
-        //                Label numberLbl = new Label
-        //                {
-        //                    Name = $"ShopSlot{i}NumberLbl",
-        //                    Tag = i,
-        //                    Margin = new Thickness(5, 10, 14, 10),
-        //                    Width = 86,
-        //                    HorizontalContentAlignment = HorizontalAlignment.Center,
-        //                    VerticalContentAlignment = VerticalAlignment.Center,
-        //                    Padding = new Thickness(5),
-        //                    FontSize = 20,
-        //                    Content = $"{SoldSlotNumber[i]}",
-        //                };
-
-        //                Label priceLbl = new Label
-        //                {
-        //                    Name = $"ShopSlot{i}PriceLbl",
-        //                    Tag = i,
-        //                    Margin = new Thickness(10, 10, 18, 10),
-        //                    Width = 70,
-        //                    HorizontalContentAlignment = HorizontalAlignment.Center,
-        //                    VerticalContentAlignment = VerticalAlignment.Center,
-        //                    Padding = new Thickness(5),
-        //                    FontSize = 20,
-        //                    Content = $"{SoldSlotSinglePrice[i]}"
-        //                };
-        //                for (int t = 0; t < 10; t++)
-        //                {
-        //                    bool endsWithSearchResult = SoldSlotSinglePrice[i].ToString().EndsWith($",{t}", StringComparison.CurrentCultureIgnoreCase);
-        //                    if (endsWithSearchResult == true)
-        //                    {
-        //                        priceLbl.Content += "0";
-        //                        break;
-        //                    }
-        //                }
-        //                priceLbl.Content += "€";
-
-        //                IntegerUpDown iup = new IntegerUpDown()
-        //                {
-        //                    Name = $"ShopSlot{i}SellNumberUpDown",
-        //                    Tag = i,
-        //                    Margin = new Thickness(10, 10, 3, 10),
-        //                    TextAlignment = TextAlignment.Center,
-        //                    VerticalContentAlignment = VerticalAlignment.Center,
-        //                    HorizontalContentAlignment = HorizontalAlignment.Center,
-        //                    FontSize = 20,
-        //                    Width = 62,
-        //                    Padding = new Thickness(0),
-        //                    IsReadOnly = true,
-        //                    Text = ShopSlotSelectedNumber[i].ToString(),
-        //                    ShowButtonSpinner = false
-        //                };
-
-        //                Button plusBtn = new Button()
-        //                {
-        //                    Name = $"ShopSlot{i}AddItemBtn",
-        //                    Tag = i,
-        //                    Content = "+",
-        //                    Height = 35,
-        //                    Width = 35,
-        //                    Margin = new Thickness(3, 10, 3, 10),
-        //                    FontSize = 20,
-        //                    Padding = new Thickness(0),
-        //                    VerticalContentAlignment = VerticalAlignment.Center,
-        //                    HorizontalContentAlignment = HorizontalAlignment.Center
-        //                };
-        //                plusBtn.Click += new RoutedEventHandler(ShopSlotPlusBtn_Click);
-
-        //                Button minusBtn = new Button()
-        //                {
-        //                    Name = $"ShopSlot{i}RemoveItemBtn",
-        //                    Tag = i,
-        //                    Content = "-",
-        //                    Height = 35,
-        //                    Width = 35,
-        //                    Margin = new Thickness(3, 10, 3, 10),
-        //                    FontSize = 20,
-        //                    Padding = new Thickness(0),
-        //                    VerticalContentAlignment = VerticalAlignment.Center,
-        //                    HorizontalContentAlignment = HorizontalAlignment.Center
-        //                };
-        //                minusBtn.Click += new RoutedEventHandler(ShopSlotMinusBtn_Click);
-
-        //                slotScp.Children.Add(statusRtg);
-        //                slotScp.Children.Add(nameLbl);
-        //                slotScp.Children.Add(numberLbl);
-        //                slotScp.Children.Add(priceLbl);
-        //                slotScp.Children.Add(iup);
-        //                slotScp.Children.Add(plusBtn);
-        //                slotScp.Children.Add(minusBtn);
-        //                ShopSlotsPanel.Children.Add(slotScp);
-        //                ShopSlotsPanel.UpdateLayout();
-        //                GetMainPrice();
-
-        //                try
-        //                {
-        //                    UnregisterName(statusRtg.Name);
-        //                }
-        //                catch { }
-        //                try
-        //                {
-        //                    UnregisterName(nameLbl.Name);
-        //                }
-        //                catch { }
-        //                try
-        //                {
-        //                    UnregisterName(numberLbl.Name);
-        //                }
-        //                catch { }
-        //                try
-        //                {
-        //                    UnregisterName(priceLbl.Name);
-        //                }
-        //                catch { }
-        //                try
-        //                {
-        //                    UnregisterName(iup.Name);
-        //                }
-        //                catch { }
-        //                try
-        //                {
-        //                    UnregisterName(plusBtn.Name);
-        //                }
-        //                catch { }
-        //                try
-        //                {
-        //                    UnregisterName(minusBtn.Name);
-        //                }
-        //                catch { }
-        //                try
-        //                {
-        //                    UnregisterName(slotScp.Name);
-        //                }
-        //                catch { }
-
-        //                RegisterName(statusRtg.Name, statusRtg);
-        //                RegisterName(nameLbl.Name, nameLbl);
-        //                RegisterName(numberLbl.Name, numberLbl);
-        //                RegisterName(priceLbl.Name, priceLbl);
-        //                RegisterName(iup.Name, iup);
-        //                RegisterName(plusBtn.Name, plusBtn);
-        //                RegisterName(minusBtn.Name, minusBtn);
-        //                RegisterName(slotScp.Name, slotScp);
-        //            }
-
-        //            logWindow.NewLog($"Building StaticsData/Day to Shop successful", 1);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logWindow.NewLog($"Building StaticsData/Day to Shop failed! {ex.Message}", 2);
-
-        //        CancelPurchaseBtn.IsEnabled = false;
-        //        ComplainPurchaseBtn.IsEnabled = false;
-        //    }
-        //}
-
         private void GetMainPrice()
         {
             double[] price;
-            if (ShopTask == "sell")
+            if (ShopTask == ShopPayMode.Sell)
             {
                 price = StorageSlotPrice;
             }
@@ -1726,7 +1506,7 @@ namespace SellerScreen
             }
 
             GetMainPrice();
-            BuildShop(themeData.GetWindowsAppTheme().ToString(), "storage");
+            BuildShop(ShopBuildingInput.Storage);
         }
 
         private void NewPurchaseBtn_Click(object sender, RoutedEventArgs e)
@@ -1735,7 +1515,7 @@ namespace SellerScreen
             OpenShop();
 
             TopBar.IsEnabled = false;
-            ShopTask = "sell";
+            ShopTask = ShopPayMode.Sell;
             CustomerNumberTxtBlock.Content = StaticsTotalCustomers + 1;
         }
 
@@ -1744,7 +1524,7 @@ namespace SellerScreen
             OpenShop();
 
             TopBar.IsEnabled = false;
-            ShopTask = "cancel";
+            ShopTask = ShopPayMode.Cancel;
             CustomerNumberTxtBlock.Content = StaticsTotalCustomers;
         }
 
@@ -1753,13 +1533,13 @@ namespace SellerScreen
             OpenShop();
 
             TopBar.IsEnabled = false;
-            ShopTask = "complain";
+            ShopTask = ShopPayMode.Complain;
             CustomerNumberTxtBlock.Content = StaticsTotalCustomers;
         }
 
         private void CancelComplainPurchaseBtn_GotFocus(object sender, RoutedEventArgs e)
         {
-            BuildShop(themeData.GetWindowsAppTheme().ToString(), "statics");
+            BuildShop(ShopBuildingInput.DayStatics);
         }
 
         private void CancelShoppingBtn_Click(object sender, RoutedEventArgs e)
@@ -1767,7 +1547,6 @@ namespace SellerScreen
             CloseShop();
 
             TopBar.IsEnabled = true;
-            ShopTask = "";
             ClearShoppingCard();
             Reload();
         }
@@ -1799,7 +1578,7 @@ namespace SellerScreen
                 bool error = false;
                 GetMainPrice();
 
-                if (ShopTask == "sell")
+                if (ShopTask == ShopPayMode.Sell)
                 {
                     ShopSellProductStart = DateTime.Now;
                     StaticsTotalCustomers++;
@@ -1880,10 +1659,10 @@ namespace SellerScreen
                     lastPayDate = DateTime.Now.Date;
                     log.NewLog(LogWindow.LogTypes.Info, LogWindow.LogThread.Kasse, LogWindow.LogActions.Verkaufen, $"Abgeschlossen", DateTime.Now, DateTime.Now - ShopSellStart);
                 }
-                else if (ShopTask == "cancel")
+                else if (ShopTask == ShopPayMode.Cancel)
                 {
                     ShopSellProductStart = DateTime.Now;
-                    StorageLoader.RunWorkerAsync();
+                    StorageLoader();
                     StaticsTotalGottenCash -= ShopMainPrice;
 
                     for (int n = 0; n < StaticsDaySoldSlotName.Length; n++)
@@ -1927,10 +1706,10 @@ namespace SellerScreen
                     }
                     log.NewLog(LogWindow.LogTypes.Info, LogWindow.LogThread.Kasse, LogWindow.LogActions.Stornieren, $"Abgeschlossen", DateTime.Now, DateTime.Now - ShopSellStart);
                 }
-                else if (ShopTask == "complain")
+                else if (ShopTask == ShopPayMode.Complain)
                 {
                     ShopSellProductStart = DateTime.Now;
-                    StorageLoader.RunWorkerAsync();
+                    StorageLoader();
 
                     for (int n = 0; n < StaticsDaySoldSlotName.Length; n++)
                     {
@@ -1973,8 +1752,7 @@ namespace SellerScreen
 
         private void OpenShop()
         {
-            TotalStaticsLoader.RunWorkerAsync();
-            DayStaticsLoader.RunWorkerAsync();
+            //DayStaticsLoader.RunWorkerAsync();
             OpenShopToolsPanel.Visibility = Visibility.Visible;
             OpenShopStaticsPanel.Visibility = Visibility.Visible;
             ClosedShopToolsPanel.Visibility = Visibility.Collapsed;
@@ -2078,7 +1856,7 @@ namespace SellerScreen
             return error;
         }
 
-        private void StorageBuilder()
+        private void BuildStorage()
         {
             StorageBuildStart = DateTime.Now;
             MainProgBarShow();
@@ -2321,8 +2099,9 @@ namespace SellerScreen
             MainProgBarHide();
         }
 
-        private void StorageLoaderRun(object sender, DoWorkEventArgs e)
+        private void StorageLoader()
         {
+            MainProgBarShow();
             StorageLoaderStart = DateTime.Now;
             string errors = "";
             try
@@ -2390,42 +2169,23 @@ namespace SellerScreen
             }
             catch (Exception ex)
             {
-                errors += $"\nLager laden, {ex.Message}";
+                errors += ex.Message;
             }
 
-            e.Result = errors;
-        }
-
-        private void StorageLoaderProgress(object sender, ProgressChangedEventArgs e)
-        {
-            MainProgBarShow();
-        }
-
-        private void StorageLoadComplete(object sender, RunWorkerCompletedEventArgs e)
-        {
-            string errors = (string)e.Result;
-
-            if (e.Cancelled)
+            if (!string.IsNullOrEmpty(errors))
             {
-                log.NewLog(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Lager, LogWindow.LogActions.Laden, "Abgebrochen", DateTime.Now, DateTime.Now - StorageLoaderStart);
-                NewMsgItem(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Lager, "Laden des Lagers abgebrochen!", null);
+                log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Lager, LogWindow.LogActions.Laden, errors, DateTime.Now, DateTime.Now - StorageLoaderStart);
+                NewMsgItem(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Lager, "Laden des Lagers fehlerhaft!", "Siehe Log");
             }
             else
             {
-                if (!string.IsNullOrEmpty(errors))
-                {
-                    log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Lager, LogWindow.LogActions.Laden, errors, DateTime.Now, DateTime.Now - StorageLoaderStart);
-                    NewMsgItem(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Lager, "Laden des Lagers fehlerhaft!", "Siehe Log");
-                }
-                else
-                {
-                    log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Lager, LogWindow.LogActions.Laden, null, DateTime.Now, DateTime.Now - StorageLoaderStart);
-                    NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Lager, "Laden des Lagers erfolgreich!", null);
-                }
+                log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Lager, LogWindow.LogActions.Laden, null, DateTime.Now, DateTime.Now - StorageLoaderStart);
+                NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Lager, "Laden des Lagers erfolgreich!", null);
             }
+
             MainProgBarHide();
-            StorageBuilder();
-            BuildShop(AppThemeStr, "storage");
+            BuildStorage();
+            BuildShop(ShopBuildingInput.Storage);
         }
 
         private void StorageSaverProgress(object sender, ProgressChangedEventArgs e)
@@ -2551,8 +2311,7 @@ namespace SellerScreen
                 StorageUncheckAll();
 
                 StorageSaver.RunWorkerAsync();
-                StorageLoader.RunWorkerAsync();
-                StorageBuilder();
+                BuildStorage();
             }
         }
 
@@ -2574,8 +2333,7 @@ namespace SellerScreen
                 StorageUncheckAll();
                 StorageDeleteSpaces();
                 StorageSaver.RunWorkerAsync();
-                StorageLoader.RunWorkerAsync();
-                StorageBuilder();
+                BuildStorage();
             }
         }
 
@@ -2608,8 +2366,7 @@ namespace SellerScreen
                 StorageUncheckAll();
 
                 StorageSaver.RunWorkerAsync();
-                StorageLoader.RunWorkerAsync();
-                StorageBuilder();
+                BuildStorage();
             }
         }
 
@@ -2627,8 +2384,7 @@ namespace SellerScreen
                 StorageUncheckAll();
 
                 StorageSaver.RunWorkerAsync();
-                StorageLoader.RunWorkerAsync();
-                StorageBuilder();
+                BuildStorage();
             }
         }
 
@@ -2769,19 +2525,19 @@ namespace SellerScreen
 
             if (e.Cancelled)
             {
-                log.NewLog(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Tagesstatistiken, LogWindow.LogActions.Speichern, "Abgebrochen", DateTime.Now, DateTime.Now - StorageSaverStart);
+                log.NewLog(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Tagesstatistiken, LogWindow.LogActions.Speichern, "Abgebrochen", DateTime.Now, DateTime.Now - DayStaticsSaveStart);
                 NewMsgItem(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Tagesstatistiken, "Speichern der Tagesstatistiken abgebrochen!", null);
             }
             else
             {
                 if (!string.IsNullOrEmpty(error))
                 {
-                    log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Tagesstatistiken, LogWindow.LogActions.Speichern, error, DateTime.Now, DateTime.Now - StorageSaverStart);
+                    log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Tagesstatistiken, LogWindow.LogActions.Speichern, error, DateTime.Now, DateTime.Now - DayStaticsSaveStart);
                     NewMsgItem(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Tagesstatistiken, "Speichern der Tagesstatistiken fehlerhaft!", "Siehe Log");
                 }
                 else
                 {
-                    log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Tagesstatistiken, LogWindow.LogActions.Speichern, null, DateTime.Now, DateTime.Now - StorageSaverStart);
+                    log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Tagesstatistiken, LogWindow.LogActions.Speichern, null, DateTime.Now, DateTime.Now - DayStaticsSaveStart);
                     NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Tagesstatistiken, "Speichern der Tagesstatistiken erfolgreich!", null);
                 }
             }
@@ -2791,6 +2547,7 @@ namespace SellerScreen
 
         private void DayStaticsSaverRun(object sender, DoWorkEventArgs e)
         {
+            DayStaticsSaveStart = DateTime.Now;
             try
             {
                 StaticsDayData staDS = new StaticsDayData
@@ -2813,42 +2570,10 @@ namespace SellerScreen
             }
         }
 
-        private void DayStaticsLoaderProgress(object sender, ProgressChangedEventArgs e)
+        private void DayStaticsLoader(DateTime date)
         {
             MainProgBarShow();
-        }
-
-        private void DayStaticsLoaderComplete(object sender, RunWorkerCompletedEventArgs e)
-        {
-            string error = (string)e.Result;
-
-            if (e.Cancelled)
-            {
-                log.NewLog(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Tagesstatistiken, LogWindow.LogActions.Laden, "Abgebrochen", DateTime.Now, DateTime.Now - DayStaticsLoadStart);
-                NewMsgItem(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Tagesstatistiken, "Laden der Tagesstatistiken abgebrochen!", null);
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(error))
-                {
-                    log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Tagesstatistiken, LogWindow.LogActions.Laden, error, DateTime.Now, DateTime.Now - DayStaticsLoadStart);
-                    NewMsgItem(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Tagesstatistiken, "Laden der Tagesstatistiken fehlerhaft!", "Siehe Log");
-                }
-                else
-                {
-                    log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Tagesstatistiken, LogWindow.LogActions.Laden, null, DateTime.Now, DateTime.Now - DayStaticsLoadStart);
-                    NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Tagesstatistiken, "Laden der Tagesstatistiken erfolgreich!", null);
-                }
-            }
-
-            MainProgBarHide();
-            BuildDayStatics();
-        }
-
-        private void DayStaticsLoaderRun(object sender, DoWorkEventArgs e)
-        {
             DayStaticsLoadStart = DateTime.Now;
-            DateTime date = (DateTime)e.Argument;
             string errors = "";
 
             try
@@ -2933,43 +2658,24 @@ namespace SellerScreen
                 errors += $"\nLaden, {ex.Message}";
             }
 
-            e.Result = errors;
-        }
-
-        private void TotalStaticsLoaderProgress(object sender, ProgressChangedEventArgs e)
-        {
-            MainProgBarShow();
-        }
-
-        private void TotalStaticsLoaderComplete(object sender, RunWorkerCompletedEventArgs e)
-        {
-            string error = (string)e.Result;
-
-            if (e.Cancelled)
+            if (!string.IsNullOrEmpty(errors))
             {
-                log.NewLog(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Laden, "Abgebrochen", DateTime.Now, DateTime.Now - TotalStaticsLoadStart);
-                NewMsgItem(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Gesamtstatistiken, "Speichern der Gesamtstatistiken abgebrochen!", null);
+                log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Tagesstatistiken, LogWindow.LogActions.Laden, errors, DateTime.Now, DateTime.Now - DayStaticsLoadStart);
+                NewMsgItem(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Tagesstatistiken, "Laden der Tagesstatistiken fehlerhaft!", "Siehe Log");
             }
             else
             {
-                if (!string.IsNullOrEmpty(error))
-                {
-                    log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Laden, error, DateTime.Now, DateTime.Now - TotalStaticsLoadStart);
-                    NewMsgItem(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Gesamtstatistiken, "Laden der Gesamtstatistiken fehlerhaft!", "Siehe Log");
-                }
-                else
-                {
-                    log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Laden, null, DateTime.Now, DateTime.Now - TotalStaticsLoadStart);
-                    NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Gesamtstatistiken, "Laden der Gesamtstatistiken erfolgreich!", null);
-                }
+                log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Tagesstatistiken, LogWindow.LogActions.Laden, null, DateTime.Now, DateTime.Now - DayStaticsLoadStart);
+                NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Tagesstatistiken, "Laden der Tagesstatistiken erfolgreich!", null);
             }
 
             MainProgBarHide();
-            BuildTotalStatics();
+            BuildDayStatics();
         }
 
-        private void TotalStaticsLoaderRun(object sender, DoWorkEventArgs e)
+        private void TotalStaticsLoader()
         {
+            MainProgBarShow();
             TotalStaticsLoadStart = DateTime.Now;
             string errors = "";
 
@@ -3141,7 +2847,19 @@ namespace SellerScreen
                 errors += $"\nLaden, {ex.Message}";
             }
 
-            e.Result = errors;
+            if (!string.IsNullOrEmpty(errors))
+            {
+                log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Laden, errors, DateTime.Now, DateTime.Now - TotalStaticsLoadStart);
+                NewMsgItem(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Gesamtstatistiken, "Laden der Gesamtstatistiken fehlerhaft!", "Siehe Log");
+            }
+            else
+            {
+                log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Laden, null, DateTime.Now, DateTime.Now - TotalStaticsLoadStart);
+                NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Gesamtstatistiken, "Laden der Gesamtstatistiken erfolgreich!", null);
+            }
+
+            MainProgBarHide();
+            BuildTotalStatics();
         }
 
         private void TotalStaticsSaverProgress(object sender, ProgressChangedEventArgs e)
@@ -3155,19 +2873,19 @@ namespace SellerScreen
 
             if (e.Cancelled)
             {
-                log.NewLog(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Speichern, "Abgebrochen", DateTime.Now, DateTime.Now - StorageSaverStart);
+                log.NewLog(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Speichern, "Abgebrochen", DateTime.Now, DateTime.Now - TotalStaticsSaveStart);
                 NewMsgItem(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Gesamtstatistiken, "Speichern der Gesamtstatistiken abgebrochen!", null);
             }
             else
             {
                 if (!string.IsNullOrEmpty(error))
                 {
-                    log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Speichern, error, DateTime.Now, DateTime.Now - StorageSaverStart);
+                    log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Speichern, error, DateTime.Now, DateTime.Now - TotalStaticsSaveStart);
                     NewMsgItem(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Gesamtstatistiken, "Speichern der Gesamtstatistiken fehlerhaft!", "Siehe Log");
                 }
                 else
                 {
-                    log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Speichern, null, DateTime.Now, DateTime.Now - StorageSaverStart);
+                    log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Speichern, null, DateTime.Now, DateTime.Now - TotalStaticsSaveStart);
                     NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Gesamtstatistiken, "Speichern der Gesamtstatistiken erfolgreich!", null);
                 }
             }
@@ -3178,7 +2896,6 @@ namespace SellerScreen
         private void TotalStaticsSaverRun(object sender, DoWorkEventArgs e)
         {
             TotalStaticsSaveStart = DateTime.Now;
-            string error = "";
             StaticsTotalData staTS = new StaticsTotalData
             {
                 StaticsTotalStartDate = StaticsTotalStartDate,
@@ -3205,14 +2922,11 @@ namespace SellerScreen
             try
             {
                 staTS.Save();
-                log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Speichern, null, DateTime.Now, DateTime.Now - TotalStaticsSaveStart);
             }
             catch (Exception ex)
             {
-                log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Gesamtstatistiken, LogWindow.LogActions.Speichern, ex.Message, DateTime.Now, DateTime.Now - TotalStaticsSaveStart);
+                e.Result = ex.Message;
             }
-
-            e.Result = error;
         }
 
         private void BuildTotalStatics()
@@ -3618,7 +3332,7 @@ namespace SellerScreen
             if (sender is Label lbl)
             {
                 DateTime date = new DateTime(int.Parse(StaticsDayYearUpDown.Value.ToString()), int.Parse(StaticsDayMonthUpDown.Value.ToString()), int.Parse(lbl.Tag.ToString()));
-                DayStaticsLoader.RunWorkerAsync(date.Date);
+                DayStaticsLoader(date.Date);
             }
         }
         #endregion
@@ -3672,41 +3386,11 @@ namespace SellerScreen
             }
         }
 
-        private void SettingsLoaderProgress(object sender, ProgressChangedEventArgs e)
+        private void SettingsLoader()
         {
             MainProgBarShow();
-        }
-
-        private void SettingsLoaderComplete(object sender, RunWorkerCompletedEventArgs e)
-        {
-            string errors = (string)e.Result;
-
-            if (e.Cancelled)
-            {
-                log.NewLog(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Einstellungen, LogWindow.LogActions.Laden, "Abgebrochen", DateTime.Now, DateTime.Now - SettingsLoadStart);
-                NewMsgItem(LogWindow.LogTypes.Warnung, LogWindow.LogThread.Einstellungen, "Laden der Einstellungen abgebrochen!", null);
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(errors))
-                {
-                    log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Einstellungen, LogWindow.LogActions.Laden, errors, DateTime.Now, DateTime.Now - SettingsLoadStart);
-                    NewMsgItem(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Einstellungen, "Laden der Einstellungen fehlerhaft!", "Siehe Log");
-                }
-                else
-                {
-                    log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Einstellungen, LogWindow.LogActions.Laden, null, DateTime.Now, DateTime.Now - SettingsLoadStart);
-                    NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Einstellungen, "Laden der Einstellungen erfolgreich!", null);
-                    BuildSettings();
-                }
-            }
-            MainProgBarHide();
-        }
-
-        private void SettingsLoaderRun(object sender, DoWorkEventArgs e)
-        {
             SettingsLoadStart = DateTime.Now;
-            string error = "";
+            string errors = "";
             try
             {
                 SettingsData setL = SettingsData.Load();
@@ -3716,7 +3400,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    error += $"\nLetzer Verkauf, {ex.Message}";
+                    errors += $"\nLetzer Verkauf, {ex.Message}";
                 }
                 try
                 {
@@ -3724,7 +3408,7 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    error += $"\nLager-Warn-Limit, {ex.Message}";
+                    errors += $"\nLager-Warn-Limit, {ex.Message}";
                 }
 
                 try
@@ -3733,15 +3417,26 @@ namespace SellerScreen
                 }
                 catch (Exception ex)
                 {
-                    error += $"\nThema, {ex.Message}";
+                    errors += $"\nThema, {ex.Message}";
                 }
             }
             catch (Exception ex)
             {
-                error += $"\nLaden, {ex.Message}";
+                errors += $"\nLaden, {ex.Message}";
             }
 
-            e.Result = error;
+            if (!string.IsNullOrEmpty(errors))
+            {
+                log.NewLog(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Einstellungen, LogWindow.LogActions.Laden, errors, DateTime.Now, DateTime.Now - SettingsLoadStart);
+                NewMsgItem(LogWindow.LogTypes.Fehler, LogWindow.LogThread.Einstellungen, "Laden der Einstellungen fehlerhaft!", "Siehe Log");
+            }
+            else
+            {
+                log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Einstellungen, LogWindow.LogActions.Laden, null, DateTime.Now, DateTime.Now - SettingsLoadStart);
+                NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Einstellungen, "Laden der Einstellungen erfolgreich!", null);
+                BuildSettings();
+            }
+            MainProgBarHide();
         }
 
         private void BuildSettings()
@@ -3780,10 +3475,7 @@ namespace SellerScreen
 
         private void SettingsSaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            MsgBox msgBox = new MsgBox("Möchten Sie die Einstellungen wirklich speichern?", "Einstellungen speichern", MsgBox.MsgButtons.YesNo, MsgBox.MsgIcon.Question);
-            msgBox.ShowDialog();
-
-            if (msgBox.DialogResult == true)
+            if (MessageBox.Show("Möchten Sie die Einstellungen wirklich speichern?", "Einstellungen speichern", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 if (SettingsDesignSystemTogSw.IsOn == true)
                 {
@@ -3819,7 +3511,7 @@ namespace SellerScreen
 
                 SettingsSaver.RunWorkerAsync();
                 BuildSettings();
-                log.NewLog(LogWindow.LogTypes.Info, LogWindow.LogThread.Einstellungen, LogWindow.LogActions.Wiederherstellen, null, DateTime.Now, TimeSpan.Zero);
+                log.NewLog(LogWindow.LogTypes.Info, LogWindow.LogThread.Einstellungen, LogWindow.LogActions.Reset, null, DateTime.Now, TimeSpan.Zero);
                 NewMsgItem(LogWindow.LogTypes.Info, LogWindow.LogThread.Einstellungen, "Die Einstellungen wurden Wiederhergestellt!", null);
             }
         }
@@ -3857,6 +3549,7 @@ namespace SellerScreen
             InstallationModePanel.Visibility = Visibility.Collapsed;
             TopBar.IsEnabled = true;
             AppInstallationMode = false;
+
             log.NewLog(LogWindow.LogTypes.Info, LogWindow.LogThread.Anwendung, LogWindow.LogActions.Aktiviert, null, DateTime.Now, DateTime.Now - AppInstallStart);
             NewMsgItem(LogWindow.LogTypes.Info, LogWindow.LogThread.Anwendung, $"{GetAssemblyTitle()} wurde aktiviert!", null);
             Reload();
@@ -3905,25 +3598,17 @@ namespace SellerScreen
                 {
                     log.Dispose();
                     Window.Dispose();
-                    StorageLoader.Dispose();
                     StorageSaver.Dispose();
-                    TotalStaticsLoader.Dispose();
                     TotalStaticsSaver.Dispose();
-                    DayStaticsLoader.Dispose();
                     DayStaticsSaver.Dispose();
-                    SettingsLoader.Dispose();
                     SettingsSaver.Dispose();
                 }
-
-                // TODO: Nicht verwaltete Ressourcen (nicht verwaltete Objekte) freigeben und Finalizer überschreiben
-                // TODO: Große Felder auf NULL setzen
                 disposedValue = true;
             }
         }
 
         public void Dispose()
         {
-            // Ändern Sie diesen Code nicht. Fügen Sie Bereinigungscode in der Methode "Dispose(bool disposing)" ein.
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
