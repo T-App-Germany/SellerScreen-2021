@@ -15,6 +15,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml;
 using Xceed.Wpf.Toolkit;
@@ -262,6 +263,9 @@ namespace SellerScreen
             CloseShop();
             RefreshMaximizeRestoreButton();
             WatchTheme();
+
+            ShopSlotTempPanel.Visibility = Visibility.Collapsed;
+            ShopSlotTempPanel.IsEnabled = false;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -782,7 +786,8 @@ namespace SellerScreen
                     Duration = TimeSpan.FromMilliseconds(500),
                     EasingFunction = new QuadraticEase(),
                 };
-                scp.BeginAnimation(MarginProperty, ani);
+                var vb = scp.Children[0];
+                vb.BeginAnimation(MarginProperty, ani);
             }
         }
 
@@ -792,77 +797,81 @@ namespace SellerScreen
             {
                 ThicknessAnimation ani = new ThicknessAnimation
                 {
-                    To = new Thickness(15, 0, 0, 0),
+                    To = new Thickness(10, 0, 0, 0),
                     Duration = TimeSpan.FromMilliseconds(500),
                     EasingFunction = new QuadraticEase()
                 };
-                scp.BeginAnimation(MarginProperty, ani);
+                var vb = scp.Children[0];
+                vb.BeginAnimation(MarginProperty, ani);
             }
         }
 
         private void NewMsgItem(LogWindow.LogTypes type, LogWindow.LogThread thread, string bodyText, string ex)
         {
-            MsgNumber++;
-
-            if (type == LogWindow.LogTypes.Fehler)
+            if (type != LogWindow.LogTypes.Erfolg)
             {
-                MsgItemTemp.BorderBrush = Brushes.Red;
-                MsgItemBackTemp.Background = Brushes.Red;
+                MsgNumber++;
+
+                if (type == LogWindow.LogTypes.Fehler)
+                {
+                    MsgItemTemp.BorderBrush = Brushes.Red;
+                    MsgItemBackTemp.Background = Brushes.Red;
+                }
+                else if (type == LogWindow.LogTypes.Erfolg)
+                {
+                    MsgItemTemp.BorderBrush = Brushes.Green;
+                    MsgItemBackTemp.Background = Brushes.Green;
+                }
+                else if (type == LogWindow.LogTypes.Warnung)
+                {
+                    MsgItemTemp.BorderBrush = Brushes.Orange;
+                    MsgItemBackTemp.Background = Brushes.Orange;
+                }
+                else if (type == LogWindow.LogTypes.Info)
+                {
+                    MsgItemTemp.BorderBrush = Brushes.DarkCyan;
+                    MsgItemBackTemp.Background = Brushes.DarkCyan;
+                }
+
+                MsgItemBodyTemp.Text = bodyText;
+                MsgItemHeaderTemp.Text = thread.ToString();
+
+
+                MsgItemBodyTemp.Foreground = TextFontColor.Background;
+                MsgItemHeaderTemp.Foreground = TextFontColor.Background;
+
+                if (!string.IsNullOrEmpty(ex))
+                {
+                    MsgItemBodyTemp.Inlines.Add(new LineBreak());
+                    MsgItemBodyTemp.Inlines.Add(new Run(ex) { FontStyle = FontStyles.Italic });
+                }
+
+                string xamlString = XamlWriter.Save(MsgItemTemp);
+                StringReader stringReader = new StringReader(xamlString);
+                XmlReader xmlReader = XmlReader.Create(stringReader);
+                Border item = (Border)XamlReader.Load(xmlReader);
+                item.Name = $"MsgItem{MsgNumber}";
+                item.Opacity = 0;
+                item.Visibility = Visibility.Visible;
+                Grid grid = (Grid)item.Child;
+                Grid prog = (Grid)grid.Children[3];
+                DoubleAnimation ani1 = new DoubleAnimation
+                {
+                    To = 1,
+                    Duration = TimeSpan.FromSeconds(1),
+                };
+                DoubleAnimation ani = new DoubleAnimation
+                {
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(6),
+                };
+                ani.Completed += new EventHandler(MsgTimeOut);
+
+                MsgPanel.Children.Insert(0, item);
+                MsgItemTarget++;
+                item.BeginAnimation(OpacityProperty, ani1);
+                prog.BeginAnimation(WidthProperty, ani);
             }
-            else if (type == LogWindow.LogTypes.Erfolg)
-            {
-                MsgItemTemp.BorderBrush = Brushes.Green;
-                MsgItemBackTemp.Background = Brushes.Green;
-            }
-            else if (type == LogWindow.LogTypes.Warnung)
-            {
-                MsgItemTemp.BorderBrush = Brushes.Orange;
-                MsgItemBackTemp.Background = Brushes.Orange;
-            }
-            else if (type == LogWindow.LogTypes.Info)
-            {
-                MsgItemTemp.BorderBrush = Brushes.DarkCyan;
-                MsgItemBackTemp.Background = Brushes.DarkCyan;
-            }
-
-            MsgItemBodyTemp.Text = bodyText;
-            MsgItemHeaderTemp.Text = thread.ToString();
-
-
-            MsgItemBodyTemp.Foreground = TextFontColor.Background;
-            MsgItemHeaderTemp.Foreground = TextFontColor.Background;
-
-            if (!string.IsNullOrEmpty(ex))
-            {
-                MsgItemBodyTemp.Inlines.Add(new LineBreak());
-                MsgItemBodyTemp.Inlines.Add(new Run(ex) { FontStyle = FontStyles.Italic });
-            }
-
-            string xamlString = XamlWriter.Save(MsgItemTemp);
-            StringReader stringReader = new StringReader(xamlString);
-            XmlReader xmlReader = XmlReader.Create(stringReader);
-            Border item = (Border)XamlReader.Load(xmlReader);
-            item.Name = $"MsgItem{MsgNumber}";
-            item.Opacity = 0;
-            item.Visibility = Visibility.Visible;
-            Grid grid = (Grid)item.Child;
-            Grid prog = (Grid)grid.Children[3];
-            DoubleAnimation ani1 = new DoubleAnimation
-            {
-                To = 1,
-                Duration = TimeSpan.FromSeconds(1),
-            };
-            DoubleAnimation ani = new DoubleAnimation
-            {
-                To = 0,
-                Duration = TimeSpan.FromSeconds(6),
-            };
-            ani.Completed += new EventHandler(MsgTimeOut);
-
-            MsgPanel.Children.Insert(0, item);
-            MsgItemTarget++;
-            item.BeginAnimation(OpacityProperty, ani1);
-            prog.BeginAnimation(WidthProperty, ani);
         }
 
         private void MsgTimeOut(object sender, EventArgs e)
@@ -993,7 +1002,8 @@ namespace SellerScreen
                 if (ShopSlotSelectedNumber[tag] != StorageSlotNumber[tag])
                 {
                     ShopSlotSelectedNumber[tag] = StorageSlotNumber[tag];
-                    IntegerUpDown iup = (IntegerUpDown)FindName($"ShopSlot{tag}SellNumberUpDown");
+                    StackPanel scp = (StackPanel)btn.Parent;
+                    IntegerUpDown iup = (IntegerUpDown)scp.Children[5];
                     iup.Value = ShopSlotSelectedNumber[tag];
                 }
                 GetMainPrice();
@@ -1013,7 +1023,8 @@ namespace SellerScreen
                         ShopSlotSelectedNumber[tag] = 0;
                     }
 
-                    IntegerUpDown iup = (IntegerUpDown)FindName($"ShopSlot{tag}SellNumberUpDown");
+                    StackPanel scp = (StackPanel)btn.Parent;
+                    IntegerUpDown iup = (IntegerUpDown)scp.Children[5];
                     iup.Value = ShopSlotSelectedNumber[tag];
                 }
                 GetMainPrice();
@@ -1026,6 +1037,7 @@ namespace SellerScreen
             {
                 int tag = int.Parse(btn.Tag.ToString());
                 short maxCount;
+
                 if (ShopTask == ShopPayMode.Sell)
                 {
                     maxCount = StorageSlotNumber[tag];
@@ -1042,7 +1054,9 @@ namespace SellerScreen
                     {
                         ShopSlotSelectedNumber[tag] = maxCount;
                     }
-                    IntegerUpDown iup = (IntegerUpDown)FindName($"ShopSlot{tag}SellNumberUpDown");
+
+                    StackPanel scp = (StackPanel)btn.Parent;
+                    IntegerUpDown iup = (IntegerUpDown)scp.Children[5];
                     iup.Value = ShopSlotSelectedNumber[tag];
                 }
                 GetMainPrice();
@@ -1051,29 +1065,23 @@ namespace SellerScreen
 
         private void ShopSlotSellNumberUpDown_ValueChanged(object sender, RoutedEventArgs e)
         {
-            if (sender is IntegerUpDown iup && iup.Value != null)
+            if (sender is ShortUpDown iup && iup.Value != null)
             {
                 short tag = short.Parse(iup.Tag.ToString());
-                short maxCount;
-                if (ShopTask == ShopPayMode.Sell)
-                {
-                    maxCount = StorageSlotNumber[tag];
-                }
-                else
-                {
-                    maxCount = StaticsDaySoldSlotNumber[tag];
-                }
+                ShopSlotSelectedNumber[tag] = (short)iup.Value;
 
-                if (ShopSlotSelectedNumber[tag] < maxCount)
+                if (ShopSlotSelectedNumber[tag] < 0)
                 {
                     ShopSlotSelectedNumber[tag] = 0;
-                    ShopSlotSelectedNumber[tag] += short.Parse(iup.Value.ToString());
-
-                    if (ShopSlotSelectedNumber[tag] > maxCount)
-                    {
-                        ShopSlotSelectedNumber[tag] = maxCount;
-                    }
+                    iup.Value = 0;
+                    ShopSlotSelectedNumber[tag] = 0;
                 }
+                else if (ShopSlotSelectedNumber[tag] > (short)iup.Maximum)
+                {
+                    ShopSlotSelectedNumber[tag] = (short)iup.Maximum;
+                    iup.Value = (short)iup.Maximum;
+                }
+
                 GetMainPrice();
             }
         }
@@ -1086,6 +1094,10 @@ namespace SellerScreen
             short number = 0;
             double price = 0;
             bool status = false;
+            string xamlString = "";
+            StringReader stringReader;
+            XmlReader xmlReader;
+
 
             if (from == ShopBuildingInput.Storage)
             {
@@ -1139,299 +1151,126 @@ namespace SellerScreen
 
                     if (status == true)
                     {
-                        Viewbox viewbox = new Viewbox();
-                        string xamlString = "";
-                        StringReader stringReader;
-                        XmlReader xmlReader;
+                        ShopSlotTempNameTxtBlock.Tag = i;
+                        ShopSlotTempNameTxtBlock.ToolTip = $"{name}";
+                        if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
+                        {
+                            ShopSlotTempNameTxtBlock.Text = "n/a";
+                        }
+                        else
+                        {
+                            ShopSlotTempNameTxtBlock.Text = $"{name}";
+                        }
 
+                        ShopSlotTempRestNumberLbl.Text = $"{number}";
+                        ShopSlotTempRestNumberLbl.Tag = i;
+
+                        ShopSlotTempPriceLbl.Tag = i;
+                        ShopSlotTempPriceLbl.Text = $"{price}";
+                        for (int t = 0; t < 10; t++)
+                        {
+                            bool endsWithSearchResult = price.ToString().EndsWith($",{t}", StringComparison.CurrentCultureIgnoreCase);
+                            if (endsWithSearchResult == true)
+                            {
+                                ShopSlotTempPriceLbl.Text += "0";
+                            }
+                        }
+                        ShopSlotTempPriceLbl.Text += "€";
+
+                        ShopSlotTempNumberIup.Tag = i;
+                        ShopSlotTempNumberIup.Text = "0";
+                        ShopSlotTempNumberIup.Value = 0;
+                        ShopSlotTempNumberIup.Maximum = number;
+
+                        ShopSlotTempPlusProductBtn.Tag = i;
+                        ShopSlotTempMinusProductBtn.Tag = i;
+                        ShopSlotTempSV_RestBtn.Tag = i;
+
+                        StackPanel scp = new StackPanel();
+                        xamlString = XamlWriter.Save(ShopSlotTempPanel);
+                        stringReader = new StringReader(xamlString);
+                        xmlReader = XmlReader.Create(stringReader);
+                        scp = (StackPanel)XamlReader.Load(xmlReader);
+                        scp.Tag = i;
+                        scp.Visibility = Visibility.Visible;
+                        scp.IsEnabled = true;
+                        if (i % 2 == 1)
+                        {
+                            scp.Background = Brushes.Transparent;
+                        }
+                        else
+                        {
+                            if (Theme == AppTheme.Light)
+                            {
+                                scp.Background = Brushes.LightGray;
+                            }
+                            else
+                            {
+                                scp.Background = (Brush)new BrushConverter().ConvertFrom("#FF555555");
+                            }
+                        }
+                        scp.MouseEnter += new MouseEventHandler(SlotItemMouseEnter);
+                        scp.MouseLeave += new MouseEventHandler(SlotItemMouseLeave);
+
+                        TextBlock tb = (TextBlock)scp.Children[2];
+                        tb.Foreground = TextFontColor.Background;
+                        tb = (TextBlock)scp.Children[3];
+                        tb.Foreground = TextFontColor.Background;
+                        tb = (TextBlock)scp.Children[4];
+                        tb.Foreground = TextFontColor.Background;
+                        ShortUpDown iup = (ShortUpDown)scp.Children[5];
+                        iup.Foreground = TextFontColor.Background;
+                        iup.ValueChanged += new RoutedPropertyChangedEventHandler<object>(ShopSlotSellNumberUpDown_ValueChanged);
+                        iup.LostFocus += new RoutedEventHandler(ShopSlotSellNumberUpDown_ValueChanged);
+
+                        Button btn = (Button)scp.Children[6];
+                        btn.Click += new RoutedEventHandler(ShopSlotPlusBtn_Click);
+                        btn = (Button)scp.Children[7];
+                        btn.Click += new RoutedEventHandler(ShopSlotMinusBtn_Click);
+                        btn = (Button)scp.Children[8];
+                        btn.Click += new RoutedEventHandler(ShopSlotRestBtn_Click);
+
+                        StackPanel scp_ = (StackPanel)btn.Content;
+                        tb = (TextBlock)scp_.Children[1];
+                        tb.Foreground = TextFontColor.Background;
+
+                        Viewbox statusVbox = (Viewbox)scp.Children[1];
                         if (from == ShopBuildingInput.Storage)
                         {
                             if (status == true)
                             {
                                 if (StorageSlotNumber[i] < StorageLimitedNumber)
                                 {
-                                    xamlString = XamlWriter.Save(ProductWarningVboxTemp);
+                                    xamlString = XamlWriter.Save(ProductWarningVboxTemp.Child);
+                                    statusVbox.ToolTip = ProductWarningVboxTemp.ToolTip;
                                 }
                                 else
                                 {
-                                    xamlString = XamlWriter.Save(ProductOkVboxTemp);
+                                    xamlString = XamlWriter.Save(ProductOkVboxTemp.Child);
+                                    statusVbox.ToolTip = ProductOkVboxTemp.ToolTip;
                                 }
                             }
                             else
                             {
-                                xamlString = XamlWriter.Save(ProductDisabledVboxTemp);
+                                xamlString = XamlWriter.Save(ProductDisabledVboxTemp.Child);
+                                statusVbox.ToolTip = ProductDisabledVboxTemp.ToolTip;
                             }
                         }
                         else
                         {
-                            xamlString = XamlWriter.Save(ProductVboxTemp);
+                            xamlString = XamlWriter.Save(ProductVboxTemp.Child);
+                            statusVbox.ToolTip = ProductVboxTemp.ToolTip;
                         }
-
-                        Viewbox statusVbox = new Viewbox();
                         stringReader = new StringReader(xamlString);
                         xmlReader = XmlReader.Create(stringReader);
-                        statusVbox = (Viewbox)XamlReader.Load(xmlReader);
-                        statusVbox.Margin = new Thickness(22, 5, 32, 5);
-                        statusVbox.Height = 35;
-                        statusVbox.Width = statusVbox.Height;
-                        statusVbox.Name = $"ShopSlot{i}StatusVbox";
+                        statusVbox.Child = (Rectangle)XamlReader.Load(xmlReader);
                         statusVbox.Tag = i;
 
-
-                        TextBlock nameLbl = new TextBlock
-                        {
-                            Name = $"ShopSlot{i}NameLbl",
-                            Tag = i,
-                            Margin = new Thickness(10),
-                            Width = 370,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Padding = new Thickness(5),
-                            FontSize = 20,
-                            Text = $"{name}",
-                            ToolTip = $"{name}",
-                            TextWrapping = TextWrapping.NoWrap,
-                            TextTrimming = TextTrimming.CharacterEllipsis
-                        };
-                        if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
-                        {
-                            nameLbl.Text = "n/a";
-                        }
-
-                        Label numberLbl = new Label
-                        {
-                            Name = $"ShopSlot{i}NumberLbl",
-                            Tag = i,
-                            Margin = new Thickness(5, 10, 14, 10),
-                            Width = 86,
-                            HorizontalContentAlignment = HorizontalAlignment.Center,
-                            VerticalContentAlignment = VerticalAlignment.Center,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Padding = new Thickness(5),
-                            FontSize = 20,
-                            Content = $"{number}",
-                        };
-
-                        Label priceLbl = new Label
-                        {
-                            Name = $"ShopSlot{i}PriceLbl",
-                            Tag = i,
-                            Margin = new Thickness(10, 10, 18, 10),
-                            Width = 70,
-                            HorizontalContentAlignment = HorizontalAlignment.Center,
-                            VerticalContentAlignment = VerticalAlignment.Center,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Padding = new Thickness(5),
-                            FontSize = 20,
-                            Content = $"{price}"
-                        };
-                        for (int t = 0; t < 10; t++)
-                        {
-                            bool endsWithSearchResult = price.ToString().EndsWith($",{t}", StringComparison.CurrentCultureIgnoreCase);
-                            if (endsWithSearchResult == true)
-                            {
-                                priceLbl.Content += "0";
-                            }
-                        }
-                        priceLbl.Content += "€";
-
-                        IntegerUpDown iup = new IntegerUpDown()
-                        {
-                            Name = $"ShopSlot{i}SellNumberUpDown",
-                            Tag = i,
-                            Margin = new Thickness(10, 10, 3, 10),
-                            TextAlignment = TextAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            HorizontalContentAlignment = HorizontalAlignment.Center,
-                            VerticalContentAlignment = VerticalAlignment.Center,
-                            FontSize = 20,
-                            Width = 62,
-                            Padding = new Thickness(0),
-                            BorderThickness = new Thickness(2),
-                            Text = "0",
-                            Value = 0,
-                            ShowButtonSpinner = false,
-                            Background = null,
-                            BorderBrush = SeperatorColor.Background,
-                            Foreground = TextFontColor.Background,
-                            Maximum = number,
-                            Minimum = 0
-                        };
-                        iup.ValueChanged += new RoutedPropertyChangedEventHandler<object>(ShopSlotSellNumberUpDown_ValueChanged);
-
-                        Button plusBtn = new Button()
-                        {
-                            Name = $"ShopSlot{i}AddItemBtn",
-                            Tag = i,
-                            Height = 35,
-                            Width = 35,
-                            Margin = new Thickness(10, 10, 5, 10),
-                            FontSize = 20,
-                            Padding = new Thickness(0),
-                            VerticalContentAlignment = VerticalAlignment.Center,
-                            HorizontalContentAlignment = HorizontalAlignment.Center
-                        };
-                        plusBtn.Click += new RoutedEventHandler(ShopSlotPlusBtn_Click);
-
-                        xamlString = XamlWriter.Save(PlusVboxTemp);
-                        stringReader = new StringReader(xamlString);
-                        xmlReader = XmlReader.Create(stringReader);
-                        viewbox = (Viewbox)XamlReader.Load(xmlReader);
-                        plusBtn.Content = viewbox;
-
-                        Button minusBtn = new Button()
-                        {
-                            Name = $"ShopSlot{i}RemoveItemBtn",
-                            Tag = i,
-                            Height = 35,
-                            Width = 35,
-                            Margin = new Thickness(5, 10, 5, 10),
-                            FontSize = 20,
-                            Padding = new Thickness(0),
-                            VerticalContentAlignment = VerticalAlignment.Center,
-                            HorizontalContentAlignment = HorizontalAlignment.Center
-                        };
-                        minusBtn.Click += new RoutedEventHandler(ShopSlotMinusBtn_Click);
-
-                        xamlString = XamlWriter.Save(MinusVboxTemp);
-                        stringReader = new StringReader(xamlString);
-                        xmlReader = XmlReader.Create(stringReader);
-                        viewbox = new Viewbox();
-                        viewbox = (Viewbox)XamlReader.Load(xmlReader);
-                        minusBtn.Content = viewbox;
-
-                        Button restBtn = new Button()
-                        {
-                            Name = $"ShopSlot{i}AddAllItemsBtn",
-                            Tag = i,
-                            Margin = new Thickness(10, 10, 0, 10),
-                            FontSize = 20,
-                            Padding = new Thickness(0),
-                            VerticalContentAlignment = VerticalAlignment.Center,
-                            HorizontalContentAlignment = HorizontalAlignment.Center
-                        };
-                        restBtn.Click += new RoutedEventHandler(ShopSlotRestBtn_Click);
-
-                        StackPanel stackPanel = new StackPanel()
-                        {
-                            Orientation = Orientation.Horizontal
-                        };
-
-
-                        Label lbl = new Label()
-                        {
-                            Content = "Rest",
-                            VerticalAlignment = VerticalAlignment.Center,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            Foreground = TextFontColor.Background
-                        };
-
-                        xamlString = XamlWriter.Save(RestVboxTemp);
-                        stringReader = new StringReader(xamlString);
-                        xmlReader = XmlReader.Create(stringReader);
-                        viewbox = (Viewbox)XamlReader.Load(xmlReader);
-                        stackPanel.Children.Add(viewbox);
-                        stackPanel.Children.Add(lbl);
-                        restBtn.Content = stackPanel;
-
-                        StackPanel slotScp = new StackPanel
-                        {
-                            Name = $"ShopSlot{i}SlotPanel",
-                            Tag = i,
-                            Orientation = Orientation.Horizontal,
-                            Margin = new Thickness(0),
-                        };
-                        if (i % 2 == 1)
-                        {
-                            slotScp.Background = Brushes.Transparent;
-                        }
-                        else
-                        {
-                            if (AppThemeStr == "Light")
-                            {
-                                slotScp.Background = Brushes.LightGray;
-                            }
-                            else
-                            {
-                                slotScp.Background = (Brush)new BrushConverter().ConvertFrom("#FF555555");
-                            }
-                        }
-
-                        slotScp.MouseEnter += new MouseEventHandler(SlotItemMouseEnter);
-                        slotScp.MouseLeave += new MouseEventHandler(SlotItemMouseLeave);
-                        slotScp.Children.Add(statusVbox);
-                        slotScp.Children.Add(nameLbl);
-                        slotScp.Children.Add(numberLbl);
-                        slotScp.Children.Add(priceLbl);
-                        slotScp.Children.Add(iup);
-                        slotScp.Children.Add(plusBtn);
-                        slotScp.Children.Add(minusBtn);
-                        slotScp.Children.Add(restBtn);
-                        ShopSlotsPanel.Children.Add(slotScp);
-                        ShopSlotsPanel.UpdateLayout();
-                        GetMainPrice();
-
-                        #region Unregister
-                        try
-                        {
-                            UnregisterName(statusVbox.Name);
-                        }
-                        catch { }
-                        try
-                        {
-                            UnregisterName(nameLbl.Name);
-                        }
-                        catch { }
-                        try
-                        {
-                            UnregisterName(numberLbl.Name);
-                        }
-                        catch { }
-                        try
-                        {
-                            UnregisterName(priceLbl.Name);
-                        }
-                        catch { }
-                        try
-                        {
-                            UnregisterName(iup.Name);
-                        }
-                        catch { }
-                        try
-                        {
-                            UnregisterName(plusBtn.Name);
-                        }
-                        catch { }
-                        try
-                        {
-                            UnregisterName(minusBtn.Name);
-                        }
-                        catch { }
-                        try
-                        {
-                            UnregisterName(restBtn.Name);
-                        }
-                        catch { }
-                        try
-                        {
-                            UnregisterName(slotScp.Name);
-                        }
-                        catch { }
-                        #endregion
-
-                        RegisterName(statusVbox.Name, statusVbox);
-                        RegisterName(nameLbl.Name, nameLbl);
-                        RegisterName(numberLbl.Name, numberLbl);
-                        RegisterName(priceLbl.Name, priceLbl);
-                        RegisterName(iup.Name, iup);
-                        RegisterName(plusBtn.Name, plusBtn);
-                        RegisterName(minusBtn.Name, minusBtn);
-                        RegisterName(restBtn.Name, restBtn);
-                        RegisterName(slotScp.Name, slotScp);
+                        ShopSlotsPanel.Children.Add(scp);
                     }
                 }
+
+                GetMainPrice();
 
                 log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Kasse, LogWindow.LogActions.Bauen, null, DateTime.Now, DateTime.Now - ShopBuildingStart);
                 NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Kasse, "Bauen der Kasse erfolgreich!", null);
@@ -1481,21 +1320,17 @@ namespace SellerScreen
             ShopMainPrice = 0;
             for (int i = 0; i < price.Length; i++)
             {
-                double singlePrice = ShopSlotSelectedNumber[i] * price[i];
-                string txt = singlePrice.ToString();
-                ShopMainPrice += double.Parse(txt);
+                ShopMainPrice += double.Parse((ShopSlotSelectedNumber[i] * price[i]).ToString());
             }
             ShopMainPriceTxtBlock.Content = $"{ShopMainPrice}";
             for (int t = 0; t < 10; t++)
             {
-                bool endsWithSearchResult = ShopMainPrice.ToString().EndsWith($",{t}", StringComparison.CurrentCultureIgnoreCase);
-                if (endsWithSearchResult == true)
+                if (ShopMainPrice.ToString().EndsWith($",{t}", StringComparison.CurrentCultureIgnoreCase) == true)
                 {
                     ShopMainPriceTxtBlock.Content += "0";
                 }
             }
             ShopMainPriceTxtBlock.Content += "€";
-
         }
 
         private void ClearShoppingCard()
@@ -1878,6 +1713,8 @@ namespace SellerScreen
 
                     for (short i = 0; i < InStorageSlots.Length; i++)
                     {
+                        System.Windows.Controls.Separator sp = new System.Windows.Controls.Separator();
+
                         CheckBox chBox = new CheckBox()
                         {
                             Name = $"StorageSlot{i}ChBox",
@@ -2025,6 +1862,7 @@ namespace SellerScreen
 
                         slotScp.MouseEnter += new MouseEventHandler(SlotItemMouseEnter);
                         slotScp.MouseLeave += new MouseEventHandler(SlotItemMouseLeave);
+                        slotScp.Children.Add(sp);
                         slotScp.Children.Add(chBox);
                         slotScp.Children.Add(slotLbl);
                         slotScp.Children.Add(statusVbox);
@@ -3463,6 +3301,8 @@ namespace SellerScreen
                     SettingsDesignLightTogSw.IsOn = false;
                 }
 
+                SettingsStorageLimitedNumberIup.Value = StorageLimitedNumber;
+
                 log.NewLog(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Einstellungen, LogWindow.LogActions.Bauen, null, DateTime.Now, DateTime.Now - SettingsBuildStart);
                 NewMsgItem(LogWindow.LogTypes.Erfolg, LogWindow.LogThread.Einstellungen, "Bauen der Einstellungen erfolgreich!", null);
             }
@@ -3489,6 +3329,8 @@ namespace SellerScreen
                 {
                     AppThemeStr = "Dark";
                 }
+
+                StorageLimitedNumber = (short)SettingsStorageLimitedNumberIup.Value;
 
                 SettingsSaver.RunWorkerAsync();
                 SetAppTheme();

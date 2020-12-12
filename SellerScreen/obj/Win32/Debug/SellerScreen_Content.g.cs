@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/envelope-icon.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/github_png40.png")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/networking-icon.png")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/arrow-previous-3-icon.png")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/arrow-next-3-icon.png")]

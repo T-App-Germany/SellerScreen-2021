@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\obj\Release\
+C:\Users\Tom Mohr\source\repos\SellerScreen\SellerScreen\obj\Release\
 SellerScreen
 none
 false
 TRACE
-C:\Users\Tom Mohr\Source\Repos\SellerScreen\SellerScreen\App.xaml
-4-222990326
-391860885829
-131694851465
-134843938079
-EditStorageSlot.xaml;LogWindow.xaml;MainWindow.xaml;MsgBox.xaml;
+C:\Users\Tom Mohr\source\repos\SellerScreen\SellerScreen\App.xaml
+3816583933
+40-309234661
+14358977228
+135-604719256
+EditStorageSlot.xaml;Log.xaml;MainWindow.xaml;
 splashscreen.png
-False
+True
 

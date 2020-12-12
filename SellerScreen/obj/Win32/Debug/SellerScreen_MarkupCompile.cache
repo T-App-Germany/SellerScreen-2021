@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\Tom Mohr\Documents\T-App Germany\Apps\SellerScreen\SellerScreen\obj\Win32\Debug\
+C:\Users\Tom Mohr\source\repos\SellerScreen\SellerScreen\obj\Win32\Debug\
 SellerScreen
 none
 false
 
-C:\Users\Tom Mohr\Documents\T-App Germany\Apps\SellerScreen\SellerScreen\App.xaml
-4-222990326
-391860885829
-131694851465
-134-1269261345
-EditStorageSlot.xaml;LogWindow.xaml;MainWindow.xaml;MsgBox.xaml;
+C:\Users\Tom Mohr\source\repos\SellerScreen\SellerScreen\App.xaml
+3816583933
+40-309234661
+14358977228
+135-604719256
+EditStorageSlot.xaml;Log.xaml;MainWindow.xaml;
 splashscreen.png
 True
 

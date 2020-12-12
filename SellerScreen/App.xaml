@@ -110,6 +110,12 @@
             <Setter Property="Background" Value="{Binding Background, ElementName=PageBackgroudColor}"/>
             <Setter Property="BorderBrush" Value="#FF808080"/>
         </Style>
+        <Style TargetType="{x:Type xctk:ShortUpDown}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="Foreground" Value="{Binding Background, ElementName=TextFontColor}"/>
+            <Setter Property="Background" Value="{Binding Background, ElementName=PageBackgroudColor}"/>
+            <Setter Property="BorderBrush" Value="#FF808080"/>
+        </Style>
         <Style TargetType="{x:Type xctk:DoubleUpDown}">
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="BorderBrush" Value="#FF808080"/>

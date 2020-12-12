@@ -1,19 +1,8 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SellerScreen_Installer
 {
@@ -37,12 +26,12 @@ namespace SellerScreen_Installer
 
         private void CreateUninstaller()
         {
-            using (RegistryKey parent = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\T-App-Germany\SellerScreen", true))
+            using (RegistryKey parent_ = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\", true))
             {
-                //if (parent == null)
-                //{
-                //    throw new Exception("Uninstall registry key not found.");
-                //}
+                if (parent_ == null)
+                {
+                    throw new Exception("Uninstall registry key not found.");
+                }
                 try
                 {
                     RegistryKey key = null;
@@ -51,8 +40,8 @@ namespace SellerScreen_Installer
                     {
                         Guid UninstallGuid = new Guid("cc80b6f7-ad7e-4589-bc86-925c21280d22");
                         string guidText = UninstallGuid.ToString("B");
-                        key = parent.OpenSubKey(guidText, true) ??
-                              parent.CreateSubKey(guidText);
+                        key = parent_.OpenSubKey(guidText, true) ??
+                              parent_.CreateSubKey(guidText);
 
                         if (key == null)
                         {
@@ -63,7 +52,7 @@ namespace SellerScreen_Installer
                         Version v = asm.GetName().Version;
                         string exe = "\"" + asm.CodeBase.Substring(8).Replace("/", "\\\\") + "\"";
 
-                        key.SetValue("DisplayName", "SellerScreen");
+                        key.SetValue("DisplayName", "SellerScreen Pro");
                         key.SetValue("ApplicationVersion", v.ToString());
                         key.SetValue("Publisher", "T-App-Germany");
                         key.SetValue("DisplayIcon", exe);
@@ -87,5 +76,5 @@ namespace SellerScreen_Installer
                 }
             }
         }
-    }
+	}
 }

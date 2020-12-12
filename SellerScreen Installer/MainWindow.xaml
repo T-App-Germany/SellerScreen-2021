@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SellerScreen_Installer"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="SellerScreen_Installer.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="850" WindowStyle="None" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="500" Width="900" MinWidth="460" MinHeight="420" WindowStyle="None" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Style x:Key="WindowMainPanelStyle" TargetType="{x:Type Border}">
             <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderBrush}" />

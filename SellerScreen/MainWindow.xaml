@@ -702,7 +702,11 @@
                                                     <Label Content="Lager" FontSize="20" Margin="10"/>
                                                 </StackPanel>
                                                 <StackPanel>
-                                                    
+                                                    <StackPanel Orientation="Horizontal" Margin="10">
+                                                        <Label Content="Warnung anzeigen wenn weniger als" FontSize="15"/>
+                                                        <xctk:ShortUpDown x:Name="SettingsStorageLimitedNumberIup" Minimum="1" Maximum="100" Value="10" FontSize="15" MinWidth="50"/>
+                                                        <Label Content="verfügbar bei einem Produkt" FontSize="15"/>
+                                                    </StackPanel>
                                                 </StackPanel>
                                             </StackPanel>
                                         </Border>
@@ -763,6 +767,28 @@
                                             </Viewbox>
                                             <TextBlock VerticalAlignment="Center"><Run FontSize="15" Text="https://t-app-germany.com"/></TextBlock>
                                         </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Viewbox>
+                                                <Rectangle Width="32" Height="32" Margin="10">
+                                                    <Rectangle.Fill>
+                                                        <DrawingBrush>
+                                                            <DrawingBrush.Drawing>
+                                                                <DrawingGroup>
+                                                                    <DrawingGroup.Children>
+                                                                        <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                                        <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M10,11L10,9 6,9 6,11 1.013,11 0.712999999999999,10.602C0.246,9.985 0,9.258 0,8.5 0,6.57 1.57,5 3.5,5L12.5,5C14.43,5 16,6.57 16,8.5 16,9.258 15.754,9.985 15.287,10.602L14.987,11z" />
+                                                                        <GeometryDrawing Brush="#FF424242" Geometry="F1M15,8.5C15,9.065,14.806,9.581,14.489,10L11,10 11,8 10.051,8 5.949,8 5,8 5,10 1.511,10C1.194,9.581 1,9.065 1,8.5 1,7.119 2.119,6 3.5,6L12.5,6C13.881,6,15,7.119,15,8.5" />
+                                                                    </DrawingGroup.Children>
+                                                                </DrawingGroup>
+                                                            </DrawingBrush.Drawing>
+                                                        </DrawingBrush>
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                            </Viewbox>
+                                            <TextBlock VerticalAlignment="Center" FontSize="15">
+                                            +49 341 68 67 24 27<LineBreak/>(WhatsApp bevorzugt)
+                                            </TextBlock>
+                                        </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Margin="10">
@@ -816,7 +842,7 @@
                             </StackPanel>
                         </ScrollViewer>
                     </Grid>
-                    <Grid x:Name="Page4Grid" Visibility="Collapsed">
+                    <Grid x:Name="Page4Grid">
                         <TextBlock HorizontalAlignment="Left" Margin="10" Text="Kasse" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" FontSize="25"/>
                         <StackPanel x:Name="Page4ContentGrid" Margin="0,50,0,0">
                             <GroupBox Header="Werkzeuge" Margin="10" FontSize="15">
@@ -824,7 +850,7 @@
                                     <StackPanel x:Name="ClosedShopToolsPanel" Orientation="Horizontal" Visibility="Collapsed">
                                         <Button x:Name="NewPurchaseBtn" ToolTip="Produkte verkaufen" FontSize="20" Margin="10" Click="NewPurchaseBtn_Click">
                                             <StackPanel Orientation="Horizontal">
-                                                <Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                                                <Viewbox>
                                                     <Rectangle Width="20" Height="20">
                                                         <Rectangle.Fill>
                                                             <DrawingBrush>
@@ -968,10 +994,10 @@
                                     </Border>
                                 </StackPanel>
                             </GroupBox>
-                            <GroupBox Header="Warenkorb" Margin="10" FontSize="15">
-                                <Grid>
-                                    <Label x:Name="ShopNoProductsFoundLbl" Content="Es wurden keine aktiven Produkte für den Verkaufstand gefunden. Navigieren Sie zum Lager und aktivieren Sie Produkte für den Verkauf."/>
-                                    <Grid x:Name="ShopProductsGrid">
+                            <GroupBox x:Name="ShoppingBag" Header="Warenkorb" Margin="10" FontSize="15">
+                                <StackPanel>
+                                    <Label x:Name="ShopNoProductsFoundLbl" Content="Es wurden keine aktiven Produkte für den Verkaufstand gefunden. Navigieren Sie zum Lager und aktivieren Sie Produkte für den Verkauf." VerticalAlignment="Top"/>
+                                    <StackPanel x:Name="ShopProductsGrid">
                                         <StackPanel Orientation="Horizontal">
                                             <Label Content="Status" HorizontalAlignment="Left" Margin="10,10,20,10" VerticalAlignment="Top" VerticalContentAlignment="Center" FontWeight="ExtraBlack" FontSize="15.3"/>
                                             <Label Content="Name" HorizontalAlignment="Left" Margin="10,10,318,10" VerticalAlignment="Top" VerticalContentAlignment="Center" FontWeight="ExtraBlack" FontSize="15.3"/>
@@ -979,94 +1005,95 @@
                                             <Label Content="Preis" HorizontalAlignment="Left" Margin="10,10,20,10" VerticalAlignment="Top" VerticalContentAlignment="Center" FontWeight="ExtraBlack" FontSize="15.3"/>
                                             <Label Content="Verkaufen" HorizontalAlignment="Left" Margin="10,10,50,10" VerticalAlignment="Top" VerticalContentAlignment="Center" FontWeight="ExtraBlack" FontSize="15.3"/>
                                         </StackPanel>
-                                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0,50,0,10">
-                                            <StackPanel x:Name="ShopSlotsPanel">
-                                                <StackPanel x:Name="ShopSlot1Panel" Background="#FF555555">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Viewbox ToolTip="Produkt deaktiviert" Height="35" Width="{Binding Height, RelativeSource={RelativeSource Self}}" Margin="22,0,32,0">
-                                                            <Rectangle Width="20" Height="20">
-                                                                <Rectangle.Fill>
-                                                                    <DrawingBrush>
-                                                                        <DrawingBrush.Drawing>
-                                                                            <DrawingGroup>
-                                                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
-                                                                                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M3.9591,0.999700000000001L9.99999999997669E-05,7.8567 9.99999999997669E-05,8.1437 3.9591,14.9997 12.0411,14.9997 16.0001,8.1437 16.0001,7.8567 12.0411,0.999700000000001z" />
-                                                                                <GeometryDrawing Brush="#FF838383" Geometry="F1M10.8867,13L8.7237,13 12.6157,5.994 13.7737,8z M5.1137,13L4.4047,11.773 9.2797,3 10.8867,3 11.5947,4.227 6.7207,13z M2.2267,8L5.1137,3 7.2767,3 3.3847,10.006z M11.4647,2L4.5347,2 1.0727,8 4.5347,14 11.4647,14 14.9277,8z" />
-                                                                                <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1M10.8867,3L9.2797,3 4.4047,11.773 5.1137,13 6.7207,13 11.5947,4.227z M5.1137,3L2.2267,8 3.3847,10.006 7.2767,3z M13.7737,8L10.8867,13 8.7237,13 12.6157,5.994z" />
-                                                                            </DrawingGroup>
-                                                                        </DrawingBrush.Drawing>
-                                                                    </DrawingBrush>
-                                                                </Rectangle.Fill>
-                                                            </Rectangle>
-                                                        </Viewbox>
-                                                        <TextBlock x:Name="ShopSlot1NameTxtBlock" Text="Slot1" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Center" FontSize="20" Width="370" Padding="5" TextTrimming="CharacterEllipsis"/>
-                                                        <Label x:Name="ShopSlot1RestNumberLbl" Content="000" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,10,14,10" FontSize="20" Width="86" Padding="5" HorizontalContentAlignment="Center"/>
-                                                        <Label x:Name="ShopSlot1PriceLbl" Content="00,00€" HorizontalAlignment="Center" Margin="10,10,18,10" VerticalAlignment="Center" FontSize="20" Width="70" HorizontalContentAlignment="Center"/>
-                                                        <xctk:IntegerUpDown x:Name="ShopSlot1NumberTxtBox" Margin="10,10,5,10" Width="62" FontSize="20" Text="0" TextAlignment="Center" Padding="0" VerticalContentAlignment="Center" ShowButtonSpinner="False" Background="{x:Null}" BorderThickness="2"/>
-                                                        <Button x:Name="ShopSlot1PlusProductBtn" Margin="10,10,5,10"  Width="35" Height="35" FontSize="20">
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Width="20" Height="20">
-                                                                    <Rectangle Width="20" Height="20">
-                                                                        <Rectangle.Fill>
-                                                                            <DrawingBrush>
-                                                                                <DrawingBrush.Drawing>
-                                                                                    <DrawingGroup>
-                                                                                        <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
-                                                                                        <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M6.0003,0L6,6 0,6 0,10 6,10 6,16 10,16 10,10 16,10 16,6 10,6 10,0z" />
-                                                                                        <GeometryDrawing Brush="#FF388934" Geometry="F1M15,9L9,9 9,15 7,15 7,9 1,9 1,7 7,7 7,1 9,1 9,7 15,7z" />
-                                                                                    </DrawingGroup>
-                                                                                </DrawingBrush.Drawing>
-                                                                            </DrawingBrush>
-                                                                        </Rectangle.Fill>
-                                                                    </Rectangle>
-                                                                </Viewbox>
-                                                            </StackPanel>
-                                                        </Button>
-                                                        <Button x:Name="ShopSlot1MinusProductBtn" Margin="5,10" Width="{Binding Width, ElementName=ShopSlot1PlusProductBtn}" Height="{Binding Height, ElementName=ShopSlot1PlusProductBtn}" FontSize="20">
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Width="20" Height="20">
-                                                                    <Rectangle Width="20" Height="20">
-                                                                        <Rectangle.Fill>
-                                                                            <DrawingBrush>
-                                                                                <DrawingBrush.Drawing>
-                                                                                    <DrawingGroup>
-                                                                                        <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
-                                                                                        <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M0,10L16,10 16,6 0,6z" />
-                                                                                        <GeometryDrawing Brush="#FFA1260C" Geometry="F1M15,9L1,9 1,7 15,7z" />
-                                                                                    </DrawingGroup>
-                                                                                </DrawingBrush.Drawing>
-                                                                            </DrawingBrush>
-                                                                        </Rectangle.Fill>
-                                                                    </Rectangle>
-                                                                </Viewbox>
-                                                            </StackPanel>
-                                                        </Button>
-                                                        <Button x:Name="ShopSlot1SV_RestBtn" Margin="10,10,0,10" >
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Width="20" Height="20">
-                                                                    <Rectangle Width="20" Height="20">
-                                                                        <Rectangle.Fill>
-                                                                            <DrawingBrush>
-                                                                                <DrawingBrush.Drawing>
-                                                                                    <DrawingGroup>
-                                                                                        <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
-                                                                                        <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M7.7,0L0.4,7.3 3.2,10.1 6,7.3 6,16 10,16 10,7.3 12.8,10.1 15.6,7.3 8.3,0z" />
-                                                                                        <GeometryDrawing Brush="#FF00529C" Geometry="F1M12.8,8.7L9,5 9,15 7,15 7,5 3.2,8.7 1.8,7.3 8,1 14.2,7.3z" />
-                                                                                    </DrawingGroup>
-                                                                                </DrawingBrush.Drawing>
-                                                                            </DrawingBrush>
-                                                                        </Rectangle.Fill>
-                                                                    </Rectangle>
-                                                                </Viewbox>
-                                                                <Label Content="Rest" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                            </StackPanel>
-                                                        </Button>
-                                                    </StackPanel>
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0">
+                                            <StackPanel>
+                                                <StackPanel x:Name="ShopSlotTempPanel" Orientation="Horizontal" Background="#FF555555" MouseEnter="SlotItemMouseEnter" MouseLeave="SlotItemMouseLeave">
+                                                    <Separator/>
+                                                    <Viewbox x:Name="ShopSlotTempVbox" ToolTip="Produkt deaktiviert" Height="35" Width="{Binding Height, RelativeSource={RelativeSource Self}}" Margin="22,0,32,0">
+                                                        <Rectangle x:Name="ShopSlotTempVboxChild" Width="20" Height="20">
+                                                            <Rectangle.Fill>
+                                                                <DrawingBrush>
+                                                                    <DrawingBrush.Drawing>
+                                                                        <DrawingGroup>
+                                                                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                                            <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M3.9591,0.999700000000001L9.99999999997669E-05,7.8567 9.99999999997669E-05,8.1437 3.9591,14.9997 12.0411,14.9997 16.0001,8.1437 16.0001,7.8567 12.0411,0.999700000000001z" />
+                                                                            <GeometryDrawing Brush="#FF838383" Geometry="F1M10.8867,13L8.7237,13 12.6157,5.994 13.7737,8z M5.1137,13L4.4047,11.773 9.2797,3 10.8867,3 11.5947,4.227 6.7207,13z M2.2267,8L5.1137,3 7.2767,3 3.3847,10.006z M11.4647,2L4.5347,2 1.0727,8 4.5347,14 11.4647,14 14.9277,8z" />
+                                                                            <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1M10.8867,3L9.2797,3 4.4047,11.773 5.1137,13 6.7207,13 11.5947,4.227z M5.1137,3L2.2267,8 3.3847,10.006 7.2767,3z M13.7737,8L10.8867,13 8.7237,13 12.6157,5.994z" />
+                                                                        </DrawingGroup>
+                                                                    </DrawingBrush.Drawing>
+                                                                </DrawingBrush>
+                                                            </Rectangle.Fill>
+                                                        </Rectangle>
+                                                    </Viewbox>
+                                                    <TextBlock x:Name="ShopSlotTempNameTxtBlock" Text="Slot1" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Center" FontSize="20" Width="368" Padding="5" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock x:Name="ShopSlotTempRestNumberLbl" Text="000" HorizontalAlignment="Center" Margin="5,10,20,10" FontSize="20" Width="82" Padding="5" TextTrimming="CharacterEllipsis" TextAlignment="Center" VerticalAlignment="Center"/>
+                                                    <TextBlock x:Name="ShopSlotTempPriceLbl" Text="00,00€" HorizontalAlignment="Center" Margin="10,10,18,10" FontSize="20" Width="70" Padding="5" TextTrimming="CharacterEllipsis" TextAlignment="Center" VerticalAlignment="Center"/>
+                                                    <xctk:ShortUpDown x:Name="ShopSlotTempNumberIup" Margin="10,10,5,10" Width="62" FontSize="20" Text="0" TextAlignment="Center" Padding="0" VerticalContentAlignment="Center" ShowButtonSpinner="False" BorderThickness="2" Minimum="0"/>
+                                                    <Button x:Name="ShopSlotTempPlusProductBtn" Margin="10,10,5,10"  Width="35" Height="35" Click="ShopSlotPlusBtn_Click">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Viewbox>
+                                                                <Rectangle Width="20" Height="20">
+                                                                    <Rectangle.Fill>
+                                                                        <DrawingBrush>
+                                                                            <DrawingBrush.Drawing>
+                                                                                <DrawingGroup>
+                                                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M6.0003,0L6,6 0,6 0,10 6,10 6,16 10,16 10,10 16,10 16,6 10,6 10,0z" />
+                                                                                    <GeometryDrawing Brush="#FF388934" Geometry="F1M15,9L9,9 9,15 7,15 7,9 1,9 1,7 7,7 7,1 9,1 9,7 15,7z" />
+                                                                                </DrawingGroup>
+                                                                            </DrawingBrush.Drawing>
+                                                                        </DrawingBrush>
+                                                                    </Rectangle.Fill>
+                                                                </Rectangle>
+                                                            </Viewbox>
+                                                        </StackPanel>
+                                                    </Button>
+                                                    <Button x:Name="ShopSlotTempMinusProductBtn" Margin="5,10" Width="35" Height="35" Click="ShopSlotMinusBtn_Click">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Viewbox>
+                                                                <Rectangle Width="20" Height="20">
+                                                                    <Rectangle.Fill>
+                                                                        <DrawingBrush>
+                                                                            <DrawingBrush.Drawing>
+                                                                                <DrawingGroup>
+                                                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M0,10L16,10 16,6 0,6z" />
+                                                                                    <GeometryDrawing Brush="#FFA1260C" Geometry="F1M15,9L1,9 1,7 15,7z" />
+                                                                                </DrawingGroup>
+                                                                            </DrawingBrush.Drawing>
+                                                                        </DrawingBrush>
+                                                                    </Rectangle.Fill>
+                                                                </Rectangle>
+                                                            </Viewbox>
+                                                        </StackPanel>
+                                                    </Button>
+                                                    <Button x:Name="ShopSlotTempSV_RestBtn" Margin="10,10,0,10" Click="ShopSlotRestBtn_Click" >
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Viewbox>
+                                                                <Rectangle Width="20" Height="20">
+                                                                    <Rectangle.Fill>
+                                                                        <DrawingBrush>
+                                                                            <DrawingBrush.Drawing>
+                                                                                <DrawingGroup>
+                                                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M7.7,0L0.4,7.3 3.2,10.1 6,7.3 6,16 10,16 10,7.3 12.8,10.1 15.6,7.3 8.3,0z" />
+                                                                                    <GeometryDrawing Brush="#FF00529C" Geometry="F1M12.8,8.7L9,5 9,15 7,15 7,5 3.2,8.7 1.8,7.3 8,1 14.2,7.3z" />
+                                                                                </DrawingGroup>
+                                                                            </DrawingBrush.Drawing>
+                                                                        </DrawingBrush>
+                                                                    </Rectangle.Fill>
+                                                                </Rectangle>
+                                                            </Viewbox>
+                                                            <TextBlock Text="Rest" Padding="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </StackPanel>
+                                                <StackPanel x:Name="ShopSlotsPanel">
                                                 </StackPanel>
                                             </StackPanel>
                                         </ScrollViewer>
-                                    </Grid>
-                                </Grid>
+                                    </StackPanel>
+                                </StackPanel>
                             </GroupBox>
                         </StackPanel>
                     </Grid>
@@ -1198,7 +1225,7 @@
                             </ScrollViewer>
                         </Grid>
                     </Grid>
-                    <Grid x:Name="Page6Grid" Visibility="Visible">
+                    <Grid x:Name="Page6Grid" Visibility="Collapsed">
                         <TextBlock HorizontalAlignment="Left" Margin="10" Text="Statistiken" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" FontSize="25"/>
                         <Grid x:Name="Page6ContentGrid" Margin="0,53,0,0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10">
@@ -1334,7 +1361,7 @@
                                                         <Label x:Name="StaticsTotalMostSoldProductsName4" Content="Name4" VerticalContentAlignment="Center" Margin="0,5"/>
                                                     </StackPanel>
                                                     <StackPanel Margin="10">
-                                                        <Label Content="Einzel Preis" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                                        <Label Content="Einzelpreis" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                                                         <Label x:Name="StaticsTotalMostSoldProductsSinglePrice0" Content="000€" VerticalContentAlignment="Center" Margin="0,5" HorizontalContentAlignment="Center"/>
                                                         <Label x:Name="StaticsTotalMostSoldProductsSinglePrice1" Content="000€" VerticalContentAlignment="Center" Margin="0,5" HorizontalContentAlignment="Center"/>
                                                         <Label x:Name="StaticsTotalMostSoldProductsSinglePrice2" Content="000€" VerticalContentAlignment="Center" Margin="0,5" HorizontalContentAlignment="Center"/>
@@ -1375,7 +1402,7 @@
                                                         <Label x:Name="StaticsTotalHighestEarningsProductsName4" Content="Name4" VerticalContentAlignment="Center" Margin="0,5"/>
                                                     </StackPanel>
                                                     <StackPanel Margin="10">
-                                                        <Label Content="Einzel Preis" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                                        <Label Content="Einzelpreis" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                                                         <Label x:Name="StaticsTotalHighestEarningsProductsSinglePrice0" Content="000€" VerticalContentAlignment="Center" Margin="0,5" HorizontalContentAlignment="Center"/>
                                                         <Label x:Name="StaticsTotalHighestEarningsProductsSinglePrice1" Content="000€" VerticalContentAlignment="Center" Margin="0,5" HorizontalContentAlignment="Center"/>
                                                         <Label x:Name="StaticsTotalHighestEarningsProductsSinglePrice2" Content="000€" VerticalContentAlignment="Center" Margin="0,5" HorizontalContentAlignment="Center"/>
@@ -1419,7 +1446,7 @@
                                         </StackPanel>
                                         <StackPanel Margin="10" Width="60">
                                             <xctk:IntegerUpDown x:Name="StaticsDayYearUpDown" Minimum="2020" Maximum="2030" FontSize="15" Value="2020" ValueChanged="StaticsDayYearUpDown_ValueChanged"/>
-                                            <xctk:IntegerUpDown x:Name="StaticsDayMonthUpDown" Minimum="1" Maximum="31" FontSize="15" Margin="0,10,0,0" Value="1" ValueChanged="StaticsDayMonthUpDown_ValueChanged"/>
+                                            <xctk:IntegerUpDown x:Name="StaticsDayMonthUpDown" Minimum="1" Maximum="12" FontSize="15" Margin="0,10,0,0" Value="1" ValueChanged="StaticsDayMonthUpDown_ValueChanged"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
@@ -1812,7 +1839,7 @@
                     </Grid>
                     <Grid x:Name="Page9Grid" Visibility="Collapsed"/>
                     <ProgressBar x:Name="MainProgBar" VerticalAlignment="Top" Margin="0" IsIndeterminate="True" Foreground="Red" Value="1" Visibility="Visible" BorderThickness="0" Height="5"/>
-                    <ScrollViewer HorizontalAlignment="Right" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer HorizontalAlignment="Right" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Visibility="Collapsed">
                         <StackPanel x:Name="MsgPanel">
                             <Border x:Name="MsgItemTemp" Width="300" MaxHeight="120" BorderThickness="2" BorderBrush="Red" CornerRadius="5" Margin="10">
                                 <Grid>
